@@ -1,0 +1,7 @@
+{
+   "files.associations": {
+      "app_threadx.h": "c",
+      "tx_api.h": "c",
+      "tx_port.h": "c"
+   }
+}

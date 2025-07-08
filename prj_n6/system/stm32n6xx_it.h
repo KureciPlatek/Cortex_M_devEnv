@@ -1,13 +1,11 @@
-/* USER CODE BEGIN Header */
 /**
   ******************************************************************************
-  * @file    Examples_LL/SPI/SPI_TwoBoards_FullDuplex_DMA_Master_Init/Inc/stm32n6xx_it.h
-  * @author  MCD Application Team
+  * @file    stm32n6xx_it.h
   * @brief   This file contains the headers of the interrupt handlers.
   ******************************************************************************
   * @attention
   *
-  * Copyright (c) 2023 STMicroelectronics.
+  * Copyright (c) 2024 STMicroelectronics.
   * All rights reserved.
   *
   * This software is licensed under terms that can be found in the LICENSE file
@@ -16,35 +14,14 @@
   *
   ******************************************************************************
   */
-/* USER CODE END Header */
 
 /* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef __STM32N6xx_IT_H
 #define __STM32N6xx_IT_H
 
 #ifdef __cplusplus
-extern "C" {
+ extern "C" {
 #endif
-
-/* Private includes ----------------------------------------------------------*/
-/* USER CODE BEGIN Includes */
-
-/* USER CODE END Includes */
-
-/* Exported types ------------------------------------------------------------*/
-/* USER CODE BEGIN ET */
-
-/* USER CODE END ET */
-
-/* Exported constants --------------------------------------------------------*/
-/* USER CODE BEGIN EC */
-
-/* USER CODE END EC */
-
-/* Exported macro ------------------------------------------------------------*/
-/* USER CODE BEGIN EM */
-
-/* USER CODE END EM */
 
 /* Exported functions prototypes ---------------------------------------------*/
 void NMI_Handler(void);
@@ -55,16 +32,7 @@ void UsageFault_Handler(void);
 void SecureFault_Handler(void);
 void SVC_Handler(void);
 void DebugMon_Handler(void);
-void PendSV_Handler(void);
-void SysTick_Handler(void);
-void EXTI13_IRQHandler(void);
-void GPDMA1_Channel1_IRQHandler(void);
-void GPDMA1_Channel2_IRQHandler(void);
-/* USER CODE BEGIN EFP */
-void USER_BUTTON_IRQHANDLER(void);
-void GPDMA1_Channel1_IRQHandler(void);
-void GPDMA1_Channel2_IRQHandler(void);
-/* USER CODE END EFP */
+void TIM6_IRQHandler(void);
 
 #ifdef __cplusplus
 }

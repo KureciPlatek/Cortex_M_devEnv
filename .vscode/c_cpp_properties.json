@@ -5,6 +5,8 @@
             "includePath": [
                 "${workspaceRoot}/**",
                 "/home/jeremie/work/STM32CubeN6/Drivers/CMSIS/**",
+                "/home/jeremie/work/STM32CubeN6/Middlewares/ST/threadx/common/**",
+                "/home/jeremie/work/STM32CubeN6/Middlewares/ST/threadx/ports/**",
                 "/home/jeremie/work/STM32CubeN6/Drivers/CMSIS/Device/ST/STM32N6xx/Include/",
                 "/home/jeremie/work/STM32CubeN6/Drivers/STM32N6xx_HAL_Driver/Src/**",
                 "/home/jeremie/work/STM32CubeN6/Drivers/STM32N6xx_HAL_Driver/Inc/**"

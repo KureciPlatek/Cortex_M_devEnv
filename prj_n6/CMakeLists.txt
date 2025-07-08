@@ -3,7 +3,9 @@ cmake_minimum_required(VERSION 3.20)
 
 # To move to .cmake
 set (MCPU_CORTEX_M55       "cortex-m55")
+set (MCPU_CORTEX_M55_PATH  cortex_m55)
 set (MCPU_CORTEX_M7        "cortex-m7")
+set (MCPU_CORTEX_M7_PATH   cortex_m7)
 set (MFLOAT_ABI_SOFT       "soft")
 set (MFLOAT_ABI_HARD       "hard")
 set (MFLOAT_ABI_MIX        "softfp")
@@ -24,41 +26,49 @@ project(${CMAKE_PROJECT_NAME} C CXX ASM)
 set (STM_EXTSRC_PATH $ENV{HOME}/work/STM32CubeN6)  # Go to home in Linux and start path from there
 set (MCU_FAMILY STM32N6xx)
 set (MCPU       ${MCPU_CORTEX_M55})  # depends on target and required compiling options
+set (MCPU_PATH  ${MCPU_CORTEX_M55_PATH})  # depends on target and required compiling options
 set (MFPU       ${MFPU_FPV4_SP_D16}) # depends on target and required compiling options
 set (MFLOAT_ABI ${MFLOAT_ABI_HARD})  # depends on target and required compiling options
 
 # --- Includes
 # Add switch/condition to check which arch/target we are building for
-set (STARTUP_SCRIPT ${CMAKE_SOURCE_DIR}/startup/startup_stm32n657x0hxq_fsbl.s)
+set (STARTUP_SCRIPT ${CMAKE_SOURCE_DIR}/startup/startup_stm32n657x0hxq.s)
+
+# --- External modules and sources
+# Add HAL list of source and include
+include(${CMAKE_SOURCE_DIR}/stm32_hal_srcList.cmake)
+
+# Add ThreadX list of source and include
+include(${CMAKE_SOURCE_DIR}/stm32_threadx_srcList.cmake) 
 
 set(INCLUDE_DIR
    ${CMAKE_SOURCE_DIR}/app
    ${CMAKE_SOURCE_DIR}/lib
-   ${STM_EXTSRC_PATH}/Drivers/CMSIS/Device/ST/${MCU_FAMILY}/Include
-   ${STM_EXTSRC_PATH}/Drivers/CMSIS/Include
-   ${STM_EXTSRC_PATH}/Drivers/${MCU_FAMILY}_HAL_Driver/Inc
-)
-
-# --- External sources
-# Use file for HAL drivers as there is a huge quantity of it and it should not change all the time
-# (Warning on CMake: it is not recommended to use file and GLOB)
-file (GLOB_RECURSE STM_EXTSRC_SOURCES CONFIGURE_DEPENDS
-   ${STM_EXTSRC_PATH}/Drivers/${MCU_FAMILY}_HAL_Driver/Src/*.c
+   ${CMAKE_SOURCE_DIR}/system
+   ${CMAKE_SOURCE_DIR}/startup
+   ${HAL_INCLUDE_DIR}
+   ${THREADX_INCLUDE_DIR}
 )
 
 # --- Sources
 # Add switch for target
 # Improvement: use target_sources() to avoid specifing those at add_executable() cmd
 set (PROJECT_SOURCES ${CMAKE_SOURCE_DIR}/app/main.c
-                     ${CMAKE_SOURCE_DIR}/app/stm32n6xx_it.c
-                     ${CMAKE_SOURCE_DIR}/app/system_stm32n6xx_fsbl.c
+                     ${CMAKE_SOURCE_DIR}/app/app_threadx.c
+                     ${CMAKE_SOURCE_DIR}/app/stm32n6xx_hal_msp.c
+                     ${CMAKE_SOURCE_DIR}/app/stm32n6xx_hal_timebase_tim.c
+                     ${CMAKE_SOURCE_DIR}/app/system_stm32n6xx.c
+                     ${CMAKE_SOURCE_DIR}/system/stm32n6xx_it.c
                      ${CMAKE_SOURCE_DIR}/system/syscalls.c
                      ${CMAKE_SOURCE_DIR}/system/sysmem.c
-                     ${STM_EXTSRC_SOURCES}
+                     ${CMAKE_SOURCE_DIR}/system/tx_initialize_low_level.S
+                     ${STARTUP_SCRIPT}
+                     ${HAL_PROJECT_SOURCES}
+                     ${THREADX_PROJECT_SOURCES}
 )
 
-# --- Linker 
-set (LINKER_SCRIPT ${CMAKE_SOURCE_DIR}/link/STM32N657X0HXQ_AXISRAM2_fsbl.ld)
+# --- Linker
+set (LINKER_SCRIPT ${CMAKE_SOURCE_DIR}/link/STM32N657X0HXQ_AXISRAM2.ld)
 
 # --- Project preprocessors
 add_compile_definitions(

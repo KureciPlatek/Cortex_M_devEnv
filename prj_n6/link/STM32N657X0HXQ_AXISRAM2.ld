@@ -1,11 +1,11 @@
 /*
 ******************************************************************************
 **
-** @file        : STM32N6XX_AXISRAM2_fsbl.ld
+** @file        : STM32N657XX_AXISRAM2_fsbl.ld
 **
 ** @author      : GPM Application Team
 **
-** @brief       : Linker script for STM32N6XX Device from STM32N6 series
+** @brief       : Linker script for STM32N657XX Device from STM32N6 series
 **                      512 KBytes RAM
 **
 **                Set heap size, stack size and stack location according
@@ -21,7 +21,7 @@
 ******************************************************************************
 ** @attention
 **
-** Copyright (c) 2025 STMicroelectronics.
+** Copyright (c) 2024 STMicroelectronics.
 ** All rights reserved.
 **
 ** This software is licensed under terms that can be found in the LICENSE file
@@ -152,7 +152,7 @@ SECTIONS
   {
     . = ALIGN(8);
     __snoncacheable = .;/* create symbol for start of section */
-    KEEP(*(.noncacheable))
+    KEEP(*(noncacheable_buffer))
     . = ALIGN(8);
     __enoncacheable = .;  /* create symbol for end of section */
   } > RAM
@@ -190,7 +190,6 @@ SECTIONS
     . = . + _Min_Stack_Size;
     . = ALIGN(8);
   } >RAM
-
   /* Remove information from the compiler libraries */
   /DISCARD/ :
   {
