@@ -2,6 +2,11 @@
    "files.associations": {
       "app_threadx.h": "c",
       "tx_api.h": "c",
-      "tx_port.h": "c"
-   }
+      "tx_port.h": "c",
+      "app_azure_rtos_config.h": "c"
+   },
+   "cortex-debug.gdbPath": "arm-none-eabi-gdb", 
+   "makefile.extensionOutputFolder": "./.vscode",
+   "doxdocgen.generic.authorEmail": "jeremie.gallee@noser.com",
+   "doxdocgen.generic.authorName": "Jeremie Gallee"
 }

@@ -1,23 +1,16 @@
 cmake_minimum_required(VERSION 3.20)
-# Run this file with: $> cmake -DCMAKE_TOOLCHAIN_FILE=stm32.cmake -S . -B bin
+# Be sure to have configured your PATHs for STM32 HAL/LL drivers and ThreadX in the following file:
+include(${CMAKE_SOURCE_DIR}/gnu_arm_toolchain.cmake)
 
 # To move to .cmake
 set (MCPU_CORTEX_M55       "cortex-m55")
 set (MCPU_CORTEX_M55_PATH  cortex_m55)
 set (MCPU_CORTEX_M7        "cortex-m7")
 set (MCPU_CORTEX_M7_PATH   cortex_m7)
-set (MFLOAT_ABI_SOFT       "soft")
-set (MFLOAT_ABI_HARD       "hard")
-set (MFLOAT_ABI_MIX        "softfp")
-set (MFPU_FPV4_SP_D16      "fpv4-sp-d16")
-set (MFPU_FPV5_D16         "fpv5-d16")
-set (RUNTIME_LIB_SYSMEM    "nano.specs")
-set (RUNTIME_LIB_SYSCALLS  "nosys.specs")
-# set (SECURE_CODE           "-mcmse")   # On H7, target CPU does not support ARMv8-M Security Extensions
 
 # --- Project name
-set (MCU_FAMILY_UPPERCASE H7)
-set (MCU_FAMILY_LOWERCASE h7)
+set (MCU_FAMILY_UPPERCASE ${UPPERCASE_MCU_FAMILY_H7})
+set (MCU_FAMILY_LOWERCASE ${LOWERCASE_MCU_FAMILY_H7})
 set (CMAKE_PROJECT_NAME prj_${MCU_FAMILY_LOWERCASE})
 project(${CMAKE_PROJECT_NAME} C CXX ASM)
 
@@ -25,7 +18,6 @@ project(${CMAKE_PROJECT_NAME} C CXX ASM)
 # All cmake required variables which are project specific AND NOT CMake standard variables
 # Do it first as it sets Makefile generation options for rest of this CMakeLists.txt
 # @todo: Add switch/condition to check which arch/target we are building for
-set (STM_EXTSRC_PATH $ENV{HOME}/work/x-cube-azrtos-${MCU_FAMILY_LOWERCASE})  # Go to home in Linux and start path from there
 set (MCU_FAMILY STM32${MCU_FAMILY_UPPERCASE}xx)
 set (MCPU       ${MCPU_CORTEX_M7})  # depends on target and required compiling options
 set (MCPU_PATH  ${MCPU_CORTEX_M7_PATH})  # depends on target and required compiling options
@@ -82,7 +74,7 @@ add_compile_definitions(
 # --- Project compilation flags/parameters
 # Possible: add_compile_options()
 set (CMAKE_C_FLAGS 
-   "-mcpu=${MCPU} -std=gnu17 -mfpu=${MFPU} -mfloat-abi=${MFLOAT_ABI} --specs=${RUNTIME_LIB_SYSMEM} --specs=${RUNTIME_LIB_SYSCALLS} ${SECURE_CODE} -mthumb -Wall -Werror -g3 -Og"
+   "-mcpu=${MCPU} -std=gnu17 -mfpu=${MFPU} -mfloat-abi=${MFLOAT_ABI} --specs=${RUNTIME_LIB_SYSMEM} --specs=${RUNTIME_LIB_SYSCALLS} ${SECURE_CODE} -mthumb -Wall -Werror -ggdb3 -O0"
 #   "-mcpu=${MCPU} -std=gnu17 -mfpu=${MFPU} -mfloat-abi=${MFLOAT_ABI} ${RUNTIME_LIB_SYSMEM} -mthumb -specs=nano.specs -specs=nosys.specs -Wall -O2 -g -ffunction-sections -fdata-sections"
 )
 

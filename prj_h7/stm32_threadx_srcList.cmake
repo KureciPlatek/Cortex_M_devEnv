@@ -1,5 +1,6 @@
 # Cmake subfile to list required inputs for STM32's ThreadX library
-set(THREADX_PATH ${STM_EXTSRC_PATH}/Middlewares/ST/threadx)
+set (THREADX_PATH ${PRJ_EXTSRC_PATH}/x-cube-azrtos-${MCU_FAMILY_LOWERCASE}/Middlewares/ST/threadx)
+# message("ThreadX path:" ${THREADX_PATH})
 
 # Includes required by ThreadX
 set(THREADX_INCLUDE_DIR

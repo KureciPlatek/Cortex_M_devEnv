@@ -79,15 +79,16 @@ void SystemClock_Config(void)
    while (!__HAL_PWR_GET_FLAG(PWR_FLAG_VOSRDY)) {}
 
    /** Initializes the RCC Oscillators according to the specified parameters in the RCC_OscInitTypeDef structure.  */
+   /* If uses MCO (Microcontroller Clock Output) of STLink (if HSEState = RCC_HSE_BYPASS), then clock freq on PH0_OSC_IN is 8 MHz */
    RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
    RCC_OscInitStruct.HSEState       = RCC_HSE_BYPASS;
    RCC_OscInitStruct.PLL.PLLState   = RCC_PLL_ON;
-   RCC_OscInitStruct.PLL.PLLSource  = RCC_PLLSOURCE_HSE;
+   RCC_OscInitStruct.PLL.PLLSource  = RCC_PLLSOURCE_HSE; /* PLLSRC on Figure 45 clock source tree. hse_ck in this case */
    RCC_OscInitStruct.PLL.PLLM       = 4;
-   RCC_OscInitStruct.PLL.PLLN       = 260;
-   RCC_OscInitStruct.PLL.PLLP       = 1;
-   RCC_OscInitStruct.PLL.PLLQ       = 2;
-   RCC_OscInitStruct.PLL.PLLR       = 2;
+   RCC_OscInitStruct.PLL.PLLN       = 260;   /* DIVNx */
+   RCC_OscInitStruct.PLL.PLLP       = 1;     /* DIVPx (pllx_p_ck) */
+   RCC_OscInitStruct.PLL.PLLQ       = 2;     /* DIVQx (pllx_q_ck) */
+   RCC_OscInitStruct.PLL.PLLR       = 2;     /* DIVRx (pllx_r_ck) */
    RCC_OscInitStruct.PLL.PLLRGE     = RCC_PLL1VCIRANGE_1;
    RCC_OscInitStruct.PLL.PLLVCOSEL  = RCC_PLL1VCOWIDE;
    RCC_OscInitStruct.PLL.PLLFRACN   = 0;
@@ -97,7 +98,8 @@ void SystemClock_Config(void)
    }
 
    /** Initializes the CPU, AHB and APB buses clocks  */
-   RCC_ClkInitStruct.ClockType      = RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_SYSCLK | RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2 | RCC_CLOCKTYPE_D3PCLK1 | RCC_CLOCKTYPE_D1PCLK1;
+   RCC_ClkInitStruct.ClockType      = RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_SYSCLK  | RCC_CLOCKTYPE_PCLK1
+                                   | RCC_CLOCKTYPE_PCLK2 | RCC_CLOCKTYPE_D3PCLK1 | RCC_CLOCKTYPE_D1PCLK1;
    RCC_ClkInitStruct.SYSCLKSource   = RCC_SYSCLKSOURCE_PLLCLK;
    RCC_ClkInitStruct.SYSCLKDivider  = RCC_SYSCLK_DIV1;
    RCC_ClkInitStruct.AHBCLKDivider  = RCC_HCLK_DIV2;
@@ -208,22 +210,6 @@ void MPU_Config(void)
    HAL_MPU_ConfigRegion(&MPU_InitStruct);
    /* Enables the MPU */
    HAL_MPU_Enable(MPU_PRIVILEGED_DEFAULT);
-}
-
-/**
- * @brief  Period elapsed callback in non blocking mode
- * @note   This function is called  when TIM6 interrupt took place, inside
- * HAL_TIM_IRQHandler(). It makes a direct call to HAL_IncTick() to increment
- * a global variable "uwTick" used as application time base.
- * @param  htim : TIM handle
- * @retval None
- */
-void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
-{
-   if (htim->Instance == TIM6)
-   {
-      HAL_IncTick();
-   }
 }
 
 /**

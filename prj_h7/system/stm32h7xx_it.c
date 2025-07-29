@@ -84,7 +84,11 @@ void DebugMon_Handler(void)
  */
 void TIM6_DAC_IRQHandler(void)
 {
-   /* Too heavy HAL function to increment HAL_Tick. Call stm32's MCU HAL tick incrementer directly */
-//   HAL_TIM_IRQHandler(&htim6);
-   HAL_IncTick();
+   if ((htim6.Instance->SR & (TIM_FLAG_UPDATE)) == (TIM_FLAG_UPDATE))
+   {
+      /* Too heavy HAL function to increment HAL_Tick. Call stm32's MCU HAL tick incrementer directly */
+      //   HAL_TIM_IRQHandler(&htim6);
+      __HAL_TIM_CLEAR_FLAG(&htim6, TIM_FLAG_UPDATE);
+      HAL_IncTick();
+   }
 }

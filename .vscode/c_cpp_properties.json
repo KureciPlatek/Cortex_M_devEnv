@@ -1,21 +1,72 @@
 {
     "configurations": [
         {
-            "name": "Linux",
+            "name": "LinuxH7",
             "includePath": [
                 "${workspaceRoot}/**",
-                "/home/jeremie/work/STM32CubeN6/Drivers/CMSIS/**",
-                "/home/jeremie/work/STM32CubeN6/Middlewares/ST/threadx/common/**",
-                "/home/jeremie/work/STM32CubeN6/Middlewares/ST/threadx/ports/**",
-                "/home/jeremie/work/STM32CubeN6/Drivers/CMSIS/Device/ST/STM32N6xx/Include/",
-                "/home/jeremie/work/STM32CubeN6/Drivers/STM32N6xx_HAL_Driver/Src/**",
-                "/home/jeremie/work/STM32CubeN6/Drivers/STM32N6xx_HAL_Driver/Inc/**"
+                "${workspaceRoot}/../x-cube-azrtos-h7/Middlewares/ST/threadx/common/**",
+                "${workspaceRoot}/../x-cube-azrtos-h7/Middlewares/ST/threadx/ports/**",
+                "${workspaceRoot}/../STM32CubeH7/Drivers/CMSIS/Device/ST/STM32H7xx/Include/**",
+                "${workspaceRoot}/../STM32CubeH7/Drivers/CMSIS/Include/**",
+                "${workspaceRoot}/../STM32CubeH7/Drivers/STM32H7xx_HAL_Driver/Src/**",
+                "${workspaceRoot}/../STM32CubeH7/Drivers/STM32H7xx_HAL_Driver/Inc/**"
             ],
-            "defines": [],
+            "defines": ["STM32H723xx"], // STM32H723xx for intelliSense to fetch HAL and STM's definitions        
             "cStandard": "c17",
             "cppStandard": "gnu++17",
-            "intelliSenseMode": "linux-gcc-arm64",
+            "intelliSenseMode": "gcc-arm",
             "compilerPath": "/usr/bin/arm-none-eabi-gcc"
+        },
+        {
+            "name": "LinuxN6",
+            "includePath": [
+                "${workspaceRoot}/**",
+                "${workspaceRoot}/../STM32CubeN6/Middlewares/ST/threadx/common/**",
+                "${workspaceRoot}/../STM32CubeN6/Middlewares/ST/threadx/ports/**",
+                "${workspaceRoot}/../STM32CubeN6/Drivers/CMSIS/Device/ST/STM32N6xx/Include/**",
+                "${workspaceRoot}/../STM32CubeN6/Drivers/CMSIS/Include/**",
+                "${workspaceRoot}/../STM32CubeN6/Drivers/STM32N6xx_HAL_Driver/Src/**",
+                "${workspaceRoot}/../STM32CubeN6/Drivers/STM32N6xx_HAL_Driver/Inc/**"
+            ],
+            "defines": ["STM32H723xx"], // STM32H723xx for intelliSense to fetch HAL and STM's definitions        
+            "cStandard": "c17",
+            "cppStandard": "gnu++17",
+            "intelliSenseMode": "gcc-arm",
+            "compilerPath": "/usr/bin/arm-none-eabi-gcc"
+        },
+        {
+            "name": "WindowsH7",
+            "includePath": [
+                "${workspaceRoot}/**",
+                "${workspaceRoot}/../x-cube-azrtos-h7/Middlewares/ST/threadx/common/**",
+                "${workspaceRoot}/../x-cube-azrtos-h7/Middlewares/ST/threadx/ports/**",
+                "${workspaceRoot}/../STM32CubeH7/Drivers/CMSIS/Device/ST/STM32H7xx/Include/**",
+                "${workspaceRoot}/../STM32CubeH7/Drivers/CMSIS/Include/**",
+                "${workspaceRoot}/../STM32CubeH7/Drivers/STM32H7xx_HAL_Driver/Src/**",
+                "${workspaceRoot}/../STM32CubeH7/Drivers/STM32H7xx_HAL_Driver/Inc/**"
+            ],
+            "defines": ["STM32H723xx"], // STM32H723xx for intelliSense to fetch HAL and STM's definitions        
+            "cStandard": "c17",
+            "cppStandard": "gnu++17",
+            "intelliSenseMode": "gcc-arm",
+            "compilerPath": "C:/Program Files (x86)/Arm GNU Toolchain arm-none-eabi/14.3 rel1/bin/arm-none-eabi-gcc"
+        },
+        {
+            "name": "WindowsN6",
+            "includePath": [
+                "${workspaceRoot}/**",
+                "${workspaceRoot}/../STM32CubeN6/Middlewares/ST/threadx/common/**",
+                "${workspaceRoot}/../STM32CubeN6/Middlewares/ST/threadx/ports/**",
+                "${workspaceRoot}/../STM32CubeN6/Drivers/CMSIS/Device/ST/STM32N6xx/Include/**",
+                "${workspaceRoot}/../STM32CubeN6/Drivers/CMSIS/Include/**",
+                "${workspaceRoot}/../STM32CubeN6/Drivers/STM32N6xx_HAL_Driver/Src/**",
+                "${workspaceRoot}/../STM32CubeN6/Drivers/STM32N6xx_HAL_Driver/Inc/**"
+            ],
+            "defines": ["STM32H723xx"], // STM32H723xx for intelliSense to fetch HAL and STM's definitions        
+            "cStandard": "c17",
+            "cppStandard": "gnu++17",
+            "intelliSenseMode": "gcc-arm",
+            "compilerPath": "C:/Program Files (x86)/Arm GNU Toolchain arm-none-eabi/14.3 rel1/bin/arm-none-eabi-gcc"
         }
     ],
     "version": 4
