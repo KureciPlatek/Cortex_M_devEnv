@@ -23,7 +23,7 @@
 
 //#define USE_DYNAMIC_MEMORY_ALLOCATION
 
-#if defined (__ARMCC_VERSION) /* For arm compiler 5 & 6 */
+#ifdef __CC_ARM
 @/**************************************************************************/
 @/*                                                                        */
 @/*       Copyright (c) Microsoft Corporation. All rights reserved.        */
@@ -47,11 +47,6 @@
 @/**************************************************************************/
 @
 @
-
-#ifdef TX_INCLUDE_USER_DEFINE_FILE
-#include "tx_user.h"
-#endif
-
     .global     _tx_thread_system_stack_ptr
     .global     _tx_initialize_unused_memory
     .global     _tx_timer_interrupt
@@ -65,23 +60,22 @@
     .global     __tx_PendSVHandler                  @ PendSV
     .global     __tx_SysTickHandler                 @ SysTick
     .global     __tx_IntHandler                     @ Int 0
-#ifdef USE_DYNAMIC_MEMORY_ALLOCATION
-    .global     Image$$RW_IRAM1$$ZI$$Limit
-#endif
-    .global     __Vectors
+	.global     __Vectors
+	.global     Image$$RW_IRAM1$$ZI$$Limit
 @
 @
-SYSTEM_CLOCK      =   520000000
+SYSTEM_CLOCK      =   16000000
 SYSTICK_CYCLES    =   ((SYSTEM_CLOCK / 100) -1)
 
     .text 32
     .align 4
     .syntax unified
+
 @/**************************************************************************/
 @/*                                                                        */
 @/*  FUNCTION                                               RELEASE        */
 @/*                                                                        */
-@/*    _tx_initialize_low_level                          Cortex-M7/AC6     */
+@/*    _tx_initialize_low_level                          Cortex-M4/AC6     */
 @/*                                                           6.1          */
 @/*  AUTHOR                                                                */
 @/*                                                                        */
@@ -132,7 +126,7 @@ _tx_initialize_low_level:
 @
 #ifdef USE_DYNAMIC_MEMORY_ALLOCATION
     LDR     r0, =_tx_initialize_unused_memory       @ Build address of unused memory pointer
-    LDR     r1, = Image$$RW_IRAM1$$ZI$$Limit        @ Build first free address
+    LDR     r1, =Image$$RW_IRAM1$$ZI$$Limit         @ Build first free address
     ADD     r1, r1, #4                              @
     STR     r1, [r0]                                @ Setup first unused memory pointer
 #endif
@@ -177,6 +171,7 @@ _tx_initialize_low_level:
     LDR     r1, =0x40FF0000                         @ SysT, PnSV, Rsrv, DbgM
     STR     r1, [r0, #0xD20]                        @ Setup System Handlers 12-15 Priority Registers
                                                     @ Note: PnSV must be lowest priority, which is 0xFF
+
 @
 @    /* Return to caller.  */
 @
@@ -212,16 +207,10 @@ __tx_IntHandler:
 @ VOID InterruptHandler (VOID)
 @ {
     PUSH    {r0, lr}
-#ifdef TX_EXECUTION_PROFILE_ENABLE
-    BL      _tx_execution_isr_enter             @ Call the ISR enter function
-#endif
 
 @    /* Do interrupt handler work here */
 @    /* BL <your C Function>.... */
 
-#ifdef TX_EXECUTION_PROFILE_ENABLE
-    BL      _tx_execution_isr_exit              @ Call the ISR exit function
-#endif
     POP     {r0, lr}
     BX      LR
 @ }
@@ -237,13 +226,9 @@ SysTick_Handler:
 @ {
 @
     PUSH    {r0, lr}
-#ifdef TX_EXECUTION_PROFILE_ENABLE
-    BL      _tx_execution_isr_enter             @ Call the ISR enter function
-#endif
+
     BL      _tx_timer_interrupt
-#ifdef TX_EXECUTION_PROFILE_ENABLE
-    BL      _tx_execution_isr_exit              @ Call the ISR exit function
-#endif
+
     POP     {r0, lr}
     BX      LR
 @ }
@@ -259,6 +244,7 @@ __tx_NMIHandler:
 __tx_DBGHandler:
     B       __tx_DBGHandler
 .end
+
 #endif
 
 #ifdef __IAR_SYSTEMS_ASM__
@@ -284,11 +270,6 @@ __tx_DBGHandler:
 ;/**************************************************************************/
 ;/**************************************************************************/
 ;
-
-#ifdef TX_INCLUDE_USER_DEFINE_FILE
-#include "tx_user.h"
-#endif
-
     EXTERN  _tx_thread_system_stack_ptr
     EXTERN  _tx_initialize_unused_memory
     EXTERN  _tx_timer_interrupt
@@ -297,8 +278,9 @@ __tx_DBGHandler:
     EXTERN  _tx_execution_isr_exit
 ;
 ;
-SYSTEM_CLOCK      EQU   520000000
+SYSTEM_CLOCK      EQU   16000000
 SYSTICK_CYCLES    EQU   ((SYSTEM_CLOCK / 100) -1)
+
 #ifdef USE_DYNAMIC_MEMORY_ALLOCATION
     RSEG    FREE_MEM:DATA
     PUBLIC  __tx_free_memory_start
@@ -313,7 +295,7 @@ __tx_free_memory_start
 ;/*                                                                        */
 ;/*  FUNCTION                                               RELEASE        */
 ;/*                                                                        */
-;/*    _tx_initialize_low_level                          Cortex-M7/IAR     */
+;/*    _tx_initialize_low_level                          Cortex-M4/IAR     */
 ;/*                                                           6.1          */
 ;/*  AUTHOR                                                                */
 ;/*                                                                        */
@@ -425,11 +407,11 @@ SysTick_Handler:
 ; {
 ;
     PUSH    {r0, lr}
-#ifdef TX_EXECUTION_PROFILE_ENABLE
+#ifdef TX_ENABLE_EXECUTION_CHANGE_NOTIFY
     BL      _tx_execution_isr_enter             ; Call the ISR enter function
 #endif
     BL      _tx_timer_interrupt
-#ifdef TX_EXECUTION_PROFILE_ENABLE
+#ifdef TX_ENABLE_EXECUTION_CHANGE_NOTIFY
     BL      _tx_execution_isr_exit              ; Call the ISR exit function
 #endif
     POP     {r0, lr}
@@ -438,7 +420,7 @@ SysTick_Handler:
     END
 #endif
 
-#if (defined(__GNUC__) && !defined(__ARMCC_VERSION))
+#ifdef __GNUC__
 @/**************************************************************************/
 @/*                                                                        */
 @/*       Copyright (c) Microsoft Corporation. All rights reserved.        */
@@ -462,11 +444,6 @@ SysTick_Handler:
 @/**************************************************************************/
 @
 @
-
-#ifdef TX_INCLUDE_USER_DEFINE_FILE
-#include "tx_user.h"
-#endif
-
     .global     _tx_thread_system_stack_ptr
     .global     _tx_initialize_unused_memory
     .global     __RAM_segment_used_end__
@@ -485,7 +462,7 @@ SysTick_Handler:
 @
 @
 
-SYSTEM_CLOCK      =   520000000
+SYSTEM_CLOCK      =   16000000
 SYSTICK_CYCLES    =   ((SYSTEM_CLOCK / 100) -1)
 
     .text 32
@@ -495,7 +472,7 @@ SYSTICK_CYCLES    =   ((SYSTEM_CLOCK / 100) -1)
 @/*                                                                        */
 @/*  FUNCTION                                               RELEASE        */
 @/*                                                                        */
-@/*    _tx_initialize_low_level                          Cortex-M7/GNU     */
+@/*    _tx_initialize_low_level                          Cortex-M4/GNU     */
 @/*                                                           6.1          */
 @/*  AUTHOR                                                                */
 @/*                                                                        */
@@ -630,14 +607,14 @@ __tx_IntHandler:
 @ VOID InterruptHandler (VOID)
 @ {
     PUSH    {r0, lr}
-#ifdef TX_EXECUTION_PROFILE_ENABLE
+#ifdef TX_ENABLE_EXECUTION_CHANGE_NOTIFY
     BL      _tx_execution_isr_enter             @ Call the ISR enter function
 #endif
 
 @    /* Do interrupt handler work here */
 @    /* BL <your C Function>.... */
 
-#ifdef TX_EXECUTION_PROFILE_ENABLE
+#ifdef TX_ENABLE_EXECUTION_CHANGE_NOTIFY
     BL      _tx_execution_isr_exit              @ Call the ISR exit function
 #endif
     POP     {r0, lr}
@@ -655,11 +632,11 @@ SysTick_Handler:
 @ {
 @
     PUSH    {r0, lr}
-#ifdef TX_EXECUTION_PROFILE_ENABLE
+#ifdef TX_ENABLE_EXECUTION_CHANGE_NOTIFY
     BL      _tx_execution_isr_enter             @ Call the ISR enter function
 #endif
     BL      _tx_timer_interrupt
-#ifdef TX_EXECUTION_PROFILE_ENABLE
+#ifdef TX_ENABLE_EXECUTION_CHANGE_NOTIFY
     BL      _tx_execution_isr_exit              @ Call the ISR exit function
 #endif
     POP     {r0, lr}

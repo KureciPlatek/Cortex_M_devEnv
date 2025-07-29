@@ -1,5 +1,5 @@
 # Cmake subfile to list required inputs for STM32's ThreadX library
-set (THREADX_PATH ${PRJ_EXTSRC_PATH}/x-cube-azrtos-${MCU_FAMILY_LOWERCASE}/Middlewares/ST/threadx)
+set (THREADX_PATH ${PRJ_EXTSRC_PATH}/x-cube-azrtos-h7/Middlewares/ST/threadx)
 # message("ThreadX path:" ${THREADX_PATH})
 
 # Includes required by ThreadX
@@ -18,7 +18,7 @@ file (GLOB_RECURSE THREADX_SRC CONFIGURE_DEPENDS
 )
 
 set (THREADX_PORT_SRC
-# No TrustZone and security requirement for ThreadX on H7
+# No TrustZone and security requirement for ThreadX on F4
 #   ${THREADX_PATH}/ports/${MCPU_PATH}/gnu/src/txe_thread_secure_stack_allocate.c
 #   ${THREADX_PATH}/ports/${MCPU_PATH}/gnu/src/tx_initialize_low_level.S   # not this one as it is rewritten in project (avoid modifs on external project)
    ${THREADX_PATH}/ports/${MCPU_PATH}/gnu/src/tx_misra.S
@@ -28,7 +28,7 @@ set (THREADX_PORT_SRC
    ${THREADX_PATH}/ports/${MCPU_PATH}/gnu/src/tx_thread_interrupt_disable.S
    ${THREADX_PATH}/ports/${MCPU_PATH}/gnu/src/tx_thread_interrupt_restore.S
    ${THREADX_PATH}/ports/${MCPU_PATH}/gnu/src/tx_thread_schedule.S
-# No TrustZone and security requirement for ThreadX on H7
+# No TrustZone and security requirement for ThreadX on F4
 #   ${THREADX_PATH}/ports/${MCPU_PATH}/gnu/src/tx_thread_secure_stack_allocate.S
 #   ${THREADX_PATH}/ports/${MCPU_PATH}/gnu/src/tx_thread_secure_stack.c
 #   ${THREADX_PATH}/ports/${MCPU_PATH}/gnu/src/tx_thread_secure_stack_free.S

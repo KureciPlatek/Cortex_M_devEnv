@@ -7,10 +7,12 @@ set (MCPU_CORTEX_M55       "cortex-m55")
 set (MCPU_CORTEX_M55_PATH  cortex_m55)
 set (MCPU_CORTEX_M7        "cortex-m7")
 set (MCPU_CORTEX_M7_PATH   cortex_m7)
+set (MCPU_CORTEX_F4        "cortex-m4")
+set (MCPU_CORTEX_F4_PATH   cortex_m4)
 
 # --- Project name
-set (MCU_FAMILY_UPPERCASE ${UPPERCASE_MCU_FAMILY_H7})
-set (MCU_FAMILY_LOWERCASE ${LOWERCASE_MCU_FAMILY_H7})
+set (MCU_FAMILY_UPPERCASE ${UPPERCASE_MCU_FAMILY_F4})
+set (MCU_FAMILY_LOWERCASE ${LOWERCASE_MCU_FAMILY_F4})
 set (CMAKE_PROJECT_NAME prj_${MCU_FAMILY_LOWERCASE})
 project(${CMAKE_PROJECT_NAME} C CXX ASM)
 
@@ -19,14 +21,14 @@ project(${CMAKE_PROJECT_NAME} C CXX ASM)
 # Do it first as it sets Makefile generation options for rest of this CMakeLists.txt
 # @todo: Add switch/condition to check which arch/target we are building for
 set (MCU_FAMILY STM32${MCU_FAMILY_UPPERCASE}xx)
-set (MCPU       ${MCPU_CORTEX_M7})  # depends on target and required compiling options
-set (MCPU_PATH  ${MCPU_CORTEX_M7_PATH})  # depends on target and required compiling options
+set (MCPU       ${MCPU_CORTEX_F4})  # depends on target and required compiling options
+set (MCPU_PATH  ${MCPU_CORTEX_F4_PATH})  # depends on target and required compiling options
 set (MFPU       ${MFPU_FPV4_SP_D16}) # depends on target and required compiling options
 set (MFLOAT_ABI ${MFLOAT_ABI_HARD})  # depends on target and required compiling options
 
 # --- Includes
 # Add switch/condition to check which arch/target we are building for
-set (STARTUP_SCRIPT ${CMAKE_SOURCE_DIR}/startup/startup_stm32h723zgtx.s)
+set (STARTUP_SCRIPT ${CMAKE_SOURCE_DIR}/startup/startup_stm32f411xe.s)
 
 # --- External modules and sources
 # Add HAL list of source and include
@@ -62,11 +64,11 @@ set (PROJECT_SOURCES ${CMAKE_SOURCE_DIR}/app/main.c
 )
 
 # --- Linker
-set (LINKER_SCRIPT ${CMAKE_SOURCE_DIR}/link/STM32H723ZGTX_FLASH.ld)
+set (LINKER_SCRIPT ${CMAKE_SOURCE_DIR}/link/stm32f411retx_flash.ld)
 
 # --- Project preprocessors
 add_compile_definitions(
-   STM32H723xx
+   STM32F411xE
    USE_FULL_LL_DRIVER
    USE_HAL_DRIVER
 )

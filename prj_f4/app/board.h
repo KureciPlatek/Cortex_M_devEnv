@@ -26,7 +26,7 @@ extern "C" {
 #endif
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32h7xx_hal.h"
+#include "stm32f4xx_hal.h"
 
 /* Private includes ----------------------------------------------------------*/
 #include <stdio.h>
@@ -35,10 +35,15 @@ extern "C" {
 void Error_Handler(void);
 
 /* Private defines -----------------------------------------------------------*/
-#define LED_GREEN_Pin         GPIO_PIN_0
-#define LED_GREEN_GPIO_Port   GPIOB
-#define LED_RED_Pin           GPIO_PIN_14
-#define LED_RED_GPIO_Port     GPIOB
+/* USB communication (LD1) (green/red), user LED (LD2) (below), power LED (LD3) (red) */
+/* On STM32F411REx Nucleo board:
+ * GREEN LED is on PA5 (SB42 soldered, SB29 not)
+ * No other LED available for use, so I added one on PA4 (MORPHO Connector CN7:32)
+ */
+#define LED_GREEN_Pin         GPIO_PIN_5  /* GREEN led */
+#define LED_GREEN_GPIO_Port   GPIOA
+#define LED_RED_Pin           GPIO_PIN_4 /* POWER led */
+#define LED_RED_GPIO_Port     GPIOA
 
 #ifdef __cplusplus
 }

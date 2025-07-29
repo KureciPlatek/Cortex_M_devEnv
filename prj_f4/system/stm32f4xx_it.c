@@ -1,6 +1,6 @@
 /**
  ******************************************************************************
- * @file    stm32h7xx_it.c
+ * @file    stm32f4xx_it.c
  * @brief   Interrupt Service Routines.
  ******************************************************************************
  * @attention
@@ -16,11 +16,11 @@
  */
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32h7xx_hal.h"
-#include "stm32h7xx_it.h"
+#include "stm32f4xx_hal.h"
+#include "stm32f4xx_it.h"
 
 /* External variables --------------------------------------------------------*/
-extern TIM_HandleTypeDef htim6;
+extern TIM_HandleTypeDef htim2;
 
 /******************************************************************************/
 /*           Cortex Processor Interruption and Exception Handlers          */
@@ -73,22 +73,22 @@ void DebugMon_Handler(void)
 }
 
 /******************************************************************************/
-/* STM32H7xx Peripheral Interrupt Handlers                                    */
+/* STM32F4xx Peripheral Interrupt Handlers                                    */
 /* Add here the Interrupt Handlers for the used peripherals.                  */
 /* For the available peripheral interrupt handler names,                      */
-/* please refer to the startup file (startup_stm32h7xx.s).                    */
+/* please refer to the startup file (startup_stm32f4xx.s).                    */
 /******************************************************************************/
 
 /**
- * @brief This function handles TIM6 global interrupt, DAC1_CH1 and DAC1_CH2 underrun error interrupts.
+ * @brief This function handles TIM2 global interrupt
  */
-void TIM6_DAC_IRQHandler(void)
+void TIM2_IRQHandler(void)
 {
-   if ((htim6.Instance->SR & (TIM_FLAG_UPDATE)) == (TIM_FLAG_UPDATE))
+   if ((htim2.Instance->SR & (TIM_FLAG_UPDATE)) == (TIM_FLAG_UPDATE))
    {
       /* Too heavy HAL function to increment HAL_Tick. Call stm32's MCU HAL tick incrementer directly */
-      //   HAL_TIM_IRQHandler(&htim6);
-      __HAL_TIM_CLEAR_FLAG(&htim6, TIM_FLAG_UPDATE);
+      //   HAL_TIM_IRQHandler(&htim2);
+      __HAL_TIM_CLEAR_FLAG(&htim2, TIM_FLAG_UPDATE);
       HAL_IncTick();
    }
 }

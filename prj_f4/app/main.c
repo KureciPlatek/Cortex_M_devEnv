@@ -24,13 +24,12 @@
 #endif
 
 /* Private variables ---------------------------------------------------------*/
-UART_HandleTypeDef huart3;
+UART_HandleTypeDef huart_stlink;
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
-static void MPU_Config(void);
 static void MX_GPIO_Init(void);
-static void MX_USART3_UART_Init(void);
+static void STLINK_USART2_UART_Init(void);
 
 /**
  * @brief  The application entry point.
@@ -38,13 +37,6 @@ static void MX_USART3_UART_Init(void);
  */
 int main(void)
 {
-   /* MPU Configuration--------------------------------------------------------*/
-   MPU_Config();
-
-   /* Enable I/D-Cache---------------------------------------------------------*/
-   SCB_EnableICache();
-   SCB_EnableDCache();
-
    /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
    HAL_Init();
 
@@ -53,7 +45,7 @@ int main(void)
 
    /* Initialize all configured peripherals */
    MX_GPIO_Init();
-   MX_USART3_UART_Init();
+   STLINK_USART2_UART_Init();  // USART2 on STM32F411 Nucleo board (PA2=USART2_TX and  PA3=USART2_RX ports)
 
    MX_ThreadX_Init();
 
@@ -70,81 +62,49 @@ void SystemClock_Config(void)
    RCC_OscInitTypeDef RCC_OscInitStruct = {0};
    RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
 
-   /** Supply configuration update enable  */
-   HAL_PWREx_ConfigSupply(PWR_LDO_SUPPLY);
+   /** Configure the main internal regulator output voltage */
+   __HAL_RCC_PWR_CLK_ENABLE();
+   __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE1);
 
-   /** Configure the main internal regulator output voltage  */
-   __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE0);
-
-   while (!__HAL_PWR_GET_FLAG(PWR_FLAG_VOSRDY)) {}
-
-   /** Initializes the RCC Oscillators according to the specified parameters in the RCC_OscInitTypeDef structure.  */
-   /* If uses MCO (Microcontroller Clock Output) of STLink (if HSEState = RCC_HSE_BYPASS), then clock freq on PH0_OSC_IN is 8 MHz */
-   RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
-   RCC_OscInitStruct.HSEState       = RCC_HSE_BYPASS;
-   RCC_OscInitStruct.PLL.PLLState   = RCC_PLL_ON;
-   RCC_OscInitStruct.PLL.PLLSource  = RCC_PLLSOURCE_HSE; /* PLLSRC on Figure 45 clock source tree. hse_ck in this case */
-   RCC_OscInitStruct.PLL.PLLM       = 4;
-   RCC_OscInitStruct.PLL.PLLN       = 260;   /* DIVNx */
-   RCC_OscInitStruct.PLL.PLLP       = 1;     /* DIVPx (pllx_p_ck) */
-   RCC_OscInitStruct.PLL.PLLQ       = 2;     /* DIVQx (pllx_q_ck) */
-   RCC_OscInitStruct.PLL.PLLR       = 2;     /* DIVRx (pllx_r_ck) */
-   RCC_OscInitStruct.PLL.PLLRGE     = RCC_PLL1VCIRANGE_1;
-   RCC_OscInitStruct.PLL.PLLVCOSEL  = RCC_PLL1VCOWIDE;
-   RCC_OscInitStruct.PLL.PLLFRACN   = 0;
+   /** Initializes the RCC Oscillators according to the specified parameters in the RCC_OscInitTypeDef structure. */
+   RCC_OscInitStruct.OscillatorType      = RCC_OSCILLATORTYPE_HSI;
+   RCC_OscInitStruct.HSIState            = RCC_HSI_ON;
+   RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
+   RCC_OscInitStruct.PLL.PLLState        = RCC_PLL_NONE;
    if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
    {
       Error_Handler();
    }
 
-   /** Initializes the CPU, AHB and APB buses clocks  */
-   RCC_ClkInitStruct.ClockType      = RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_SYSCLK  | RCC_CLOCKTYPE_PCLK1
-                                   | RCC_CLOCKTYPE_PCLK2 | RCC_CLOCKTYPE_D3PCLK1 | RCC_CLOCKTYPE_D1PCLK1;
-   RCC_ClkInitStruct.SYSCLKSource   = RCC_SYSCLKSOURCE_PLLCLK;
-   RCC_ClkInitStruct.SYSCLKDivider  = RCC_SYSCLK_DIV1;
-   RCC_ClkInitStruct.AHBCLKDivider  = RCC_HCLK_DIV2;
-   RCC_ClkInitStruct.APB3CLKDivider = RCC_APB3_DIV2;
-   RCC_ClkInitStruct.APB1CLKDivider = RCC_APB1_DIV2;
-   RCC_ClkInitStruct.APB2CLKDivider = RCC_APB2_DIV2;
-   RCC_ClkInitStruct.APB4CLKDivider = RCC_APB4_DIV2;
+   /** Initializes the CPU, AHB and APB buses clocks */
+   RCC_ClkInitStruct.ClockType      = RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_SYSCLK | RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2;
+   RCC_ClkInitStruct.SYSCLKSource   = RCC_SYSCLKSOURCE_HSI;
+   RCC_ClkInitStruct.AHBCLKDivider  = RCC_SYSCLK_DIV1;
+   RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV1;
+   RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
 
-   if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_3) != HAL_OK)
+   if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_0) != HAL_OK)
    {
       Error_Handler();
    }
 }
 
 /**
- * @brief USART3 Initialization Function
+ * @brief STLink UART Initialization Function
  * @param None
  * @retval None
  */
-static void MX_USART3_UART_Init(void)
+static void STLINK_USART2_UART_Init(void)
 {
-   huart3.Instance                     = USART3;
-   huart3.Init.BaudRate                = 115200;
-   huart3.Init.WordLength              = UART_WORDLENGTH_8B;
-   huart3.Init.StopBits                = UART_STOPBITS_1;
-   huart3.Init.Parity                  = UART_PARITY_NONE;
-   huart3.Init.Mode                    = UART_MODE_TX_RX;
-   huart3.Init.HwFlowCtl               = UART_HWCONTROL_NONE;
-   huart3.Init.OverSampling            = UART_OVERSAMPLING_16;
-   huart3.Init.OneBitSampling          = UART_ONE_BIT_SAMPLE_DISABLE;
-   huart3.Init.ClockPrescaler          = UART_PRESCALER_DIV1;
-   huart3.AdvancedInit.AdvFeatureInit  = UART_ADVFEATURE_NO_INIT;
-   if (HAL_UART_Init(&huart3) != HAL_OK)
-   {
-      Error_Handler();
-   }
-   if (HAL_UARTEx_SetTxFifoThreshold(&huart3, UART_TXFIFO_THRESHOLD_1_8) != HAL_OK)
-   {
-      Error_Handler();
-   }
-   if (HAL_UARTEx_SetRxFifoThreshold(&huart3, UART_RXFIFO_THRESHOLD_1_8) != HAL_OK)
-   {
-      Error_Handler();
-   }
-   if (HAL_UARTEx_DisableFifoMode(&huart3) != HAL_OK)
+   huart_stlink.Instance          = USART2;
+   huart_stlink.Init.BaudRate     = 115200;
+   huart_stlink.Init.WordLength   = UART_WORDLENGTH_8B;
+   huart_stlink.Init.StopBits     = UART_STOPBITS_1;
+   huart_stlink.Init.Parity       = UART_PARITY_NONE;
+   huart_stlink.Init.Mode         = UART_MODE_TX_RX;
+   huart_stlink.Init.HwFlowCtl    = UART_HWCONTROL_NONE;
+   huart_stlink.Init.OverSampling = UART_OVERSAMPLING_16;
+   if (HAL_UART_Init(&huart_stlink) != HAL_OK)
    {
       Error_Handler();
    }
@@ -160,19 +120,20 @@ static void MX_GPIO_Init(void)
    GPIO_InitTypeDef GPIO_InitStruct = {0};
 
    /* GPIO Ports Clock Enable */
+   __HAL_RCC_GPIOA_CLK_ENABLE();
    __HAL_RCC_GPIOH_CLK_ENABLE();
    __HAL_RCC_GPIOB_CLK_ENABLE();
    __HAL_RCC_GPIOD_CLK_ENABLE();
 
    /*Configure GPIO pin Output Level */
-   HAL_GPIO_WritePin(GPIOB, LED_GREEN_Pin | LED_RED_Pin, GPIO_PIN_RESET);
+   HAL_GPIO_WritePin(LED_GREEN_GPIO_Port, LED_GREEN_Pin | LED_RED_Pin, GPIO_PIN_RESET);
 
    /*Configure GPIO pins : LED_GREEN_Pin LED_RED_Pin */
    GPIO_InitStruct.Pin = LED_GREEN_Pin | LED_RED_Pin;
    GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
    GPIO_InitStruct.Pull = GPIO_NOPULL;
    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
-   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+   HAL_GPIO_Init(LED_GREEN_GPIO_Port, &GPIO_InitStruct);
 }
 
 /**
@@ -182,34 +143,8 @@ static void MX_GPIO_Init(void)
  */
 PUTCHAR_PROTOTYPE
 {
-   HAL_UART_Transmit(&huart3, (uint8_t *)&ch, 1, 0xFFFF);
+   HAL_UART_Transmit(&huart_stlink, (uint8_t *)&ch, 1, 0xFFFF);
    return ch;
-}
-
-/* MPU Configuration */
-void MPU_Config(void)
-{
-   MPU_Region_InitTypeDef MPU_InitStruct = {0};
-
-   /* Disables the MPU */
-   HAL_MPU_Disable();
-
-   /** Initializes and configures the Region and the memory to be protected  */
-   MPU_InitStruct.Enable = MPU_REGION_ENABLE;
-   MPU_InitStruct.Number = MPU_REGION_NUMBER0;
-   MPU_InitStruct.BaseAddress = 0x0;
-   MPU_InitStruct.Size = MPU_REGION_SIZE_4GB;
-   MPU_InitStruct.SubRegionDisable = 0x87;
-   MPU_InitStruct.TypeExtField = MPU_TEX_LEVEL0;
-   MPU_InitStruct.AccessPermission = MPU_REGION_NO_ACCESS;
-   MPU_InitStruct.DisableExec = MPU_INSTRUCTION_ACCESS_DISABLE;
-   MPU_InitStruct.IsShareable = MPU_ACCESS_SHAREABLE;
-   MPU_InitStruct.IsCacheable = MPU_ACCESS_NOT_CACHEABLE;
-   MPU_InitStruct.IsBufferable = MPU_ACCESS_NOT_BUFFERABLE;
-
-   HAL_MPU_ConfigRegion(&MPU_InitStruct);
-   /* Enables the MPU */
-   HAL_MPU_Enable(MPU_PRIVILEGED_DEFAULT);
 }
 
 /**
@@ -223,8 +158,8 @@ void Error_Handler(void)
    printf("** Error occurred ** \n\r");
    while (1)
    {
-      HAL_GPIO_TogglePin(LED_RED_GPIO_Port, LED_RED_Pin);
-      HAL_Delay(1000);
+//      HAL_GPIO_TogglePin(LED_RED_GPIO_Port, LED_RED_Pin);
+//      HAL_Delay(1000);
    }
 }
 
