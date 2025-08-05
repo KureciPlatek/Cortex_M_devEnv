@@ -1,0 +1,15 @@
+/**
+ * @file    board.h
+ * @author  Jeremie Gallee (jeremie.gallee@noser.com)
+ * @brief   Board description and specifications (is a Raspberry Pico)
+ * @version 0.1
+ * @date    2025-07-22
+ * 
+ * @copyright Copyright (c) 2025
+ * 
+ */
+
+#ifndef BOARD_H
+#define BOARD_H
+
+#endif /* BOARD_H */

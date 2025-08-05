@@ -84,6 +84,18 @@
             "cppStandard": "gnu++17",
             "intelliSenseMode": "gcc-arm",
             "compilerPath": "C:/Program Files (x86)/Arm GNU Toolchain arm-none-eabi/14.3 rel1/bin/arm-none-eabi-gcc"
+        },
+        {
+            "name": "LinuxRP",
+            "includePath": [
+                "${workspaceRoot}/**",
+                "${workspaceRoot}/../pico-sdk/**",
+            ],
+//            "defines": ["STM32H723xx"], // STM32H723xx for intelliSense to fetch HAL and STM's definitions
+            "cStandard": "c17",
+            "cppStandard": "gnu++17",
+            "intelliSenseMode": "gcc-arm",
+            "compilerPath": "/usr/bin/arm-none-eabi-gcc"
         }
     ],
     "version": 4
