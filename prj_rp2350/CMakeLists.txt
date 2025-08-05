@@ -20,7 +20,7 @@ set (MCU_FAMILY_LOWERCASE ${LOWERCASE_MCU_FAMILY_RP})
 
 # --- External modules and sources
 message("Project RP2350")
-set(PICO_BOARD pico2)   # Set pico-sdk for RP2350. Set to pico for RP2040
+set(PICO_BOARD pico2_w)          # Set pico-sdk's PICO_BOARD to pico2_w (RP2350 W). Other values are pico, pico_w and pico2
 set(picotool_DIR /opt/picotool)  # Set picotool path (picotool was placed in /opt/ arbitrarily. Could be placed anywhere)
 set(PICO_SDK_PATH ${CMAKE_SOURCE_DIR}/../../pico-sdk)
 include(${CMAKE_SOURCE_DIR}/pico_sdk_import.cmake)
@@ -77,6 +77,9 @@ pico_enable_stdio_usb(${CMAKE_PROJECT_NAME} 0)
 # Add project specific libraries
 target_include_directories(${CMAKE_PROJECT_NAME} PUBLIC ${INCLUDE_DIR})
 # Add pico-sdk libraries
-target_link_libraries(${CMAKE_PROJECT_NAME} pico_stdlib)
+target_link_libraries(${CMAKE_PROJECT_NAME} 
+   pico_stdlib
+   pico_cyw43_arch_none # LED accessible on PICO 2 W only through CYW43 Bluetooth+Wifi chip
+)
 # Add .elf and .hex files
 pico_add_extra_outputs(${CMAKE_PROJECT_NAME})
