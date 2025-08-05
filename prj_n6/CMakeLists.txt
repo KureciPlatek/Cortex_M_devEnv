@@ -98,6 +98,9 @@ set (CMAKE_EXE_LINKER_FLAGS
 add_executable(${CMAKE_PROJECT_NAME}.elf ${PROJECT_SOURCES})
 target_include_directories(${CMAKE_PROJECT_NAME}.elf PUBLIC ${INCLUDE_DIR})
 
+
+STM32_SigningTool_CLI.exe -bin Tx_Thread_Creation.bin -nk -of 0x80000000 -t fsbl -o Tx_Thread_Creation-trusted.bin -hv 2.3 -dump Tx_Thread_Creation-trusted.bin
+
 # Improvements:
 # add_custom_command() for hex and bin files
 # add_custom_command() to flash automatically and start debug session if debug?

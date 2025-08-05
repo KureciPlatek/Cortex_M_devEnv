@@ -17,8 +17,8 @@
   */
 
 /* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef MAIN_H
-#define MAIN_H
+#ifndef BOARD_H
+#define BOARD_H
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32n6xx_hal.h"
@@ -32,5 +32,5 @@
 
 void Error_Handler(void);
 
-#endif /* MAIN_H */
+#endif /* BOARD_H */
 
