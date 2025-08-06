@@ -1,10 +1,20 @@
 cmake_minimum_required(VERSION 3.20)
+# Some options to provide to pico-sdk cmake files:
+# cmake -DCMAKE_BUILD_TYPE=Debug -DPICO_DEOPTIMIZED_DEBUG=1 ..
+# to avoid any optimistion
+
 # Be sure to have configured your PATHs for STM32 HAL/LL drivers and ThreadX in the following file:
 include(${CMAKE_SOURCE_DIR}/cortex_m_env.cmake)
 
-# To move to .cmake
-set (MCPU_CORTEX_M0P       "cortex-m0+")
-set (MCPU_CORTEX_M0P       "cortex-m33")
+# @todo To move to .cmake
+set (MCPU_CORTEX_M55       "cortex-m55")
+set (MCPU_CORTEX_M55_PATH  cortex_m55)
+set (MCPU_CORTEX_M7        "cortex-m7")
+set (MCPU_CORTEX_M7_PATH   cortex_m7)
+set (MCPU_CORTEX_M0        "cortex-m 0")
+set (MCPU_CORTEX_M0_PATH   corte_m0)
+set (MCPU_CORTEX_M33       "cortex-m33")
+set (MCPU_CORTEX_M33_PATH  cortex_m33)
 set (MFLOAT_ABI_SOFT       "soft")
 set (MFLOAT_ABI_HARD       "hard")
 set (MFLOAT_ABI_MIX        "softfp")
@@ -25,8 +35,13 @@ set(picotool_DIR /opt/picotool)  # Set picotool path (picotool was placed in /op
 set(PICO_SDK_PATH ${CMAKE_SOURCE_DIR}/../../pico-sdk)
 include(${CMAKE_SOURCE_DIR}/pico_sdk_import.cmake)
 
+# --- Set project architecture parameters
+set (MCPU         ${MCPU_CORTEX_M33})  # depends on target and required compiling options
+set (MCPU_PATH    ${MCPU_CORTEX_M33_PATH})  # depends on target and required compiling options
+
 # Add ThreadX list of source and include
-#include(${CMAKE_SOURCE_DIR}/stm32_threadx_srcList.cmake) 
+set (THREADX_SECURE)
+include(${CMAKE_SOURCE_DIR}/cortexM_threadx_srcList.cmake)
 
 # --- Project name and declaration
 set (CMAKE_PROJECT_NAME prj_${MCU_FAMILY_LOWERCASE})
@@ -43,13 +58,17 @@ set (MFLOAT_ABI ${MFLOAT_ABI_HARD})  # depends on target and required compiling 
 # Hint: do not add path to pico-sdk include folders, as it will be handled later with target_link_libraries(pico_stdlib)
 set(INCLUDE_DIR
    ${CMAKE_SOURCE_DIR}/app
+   ${CMAKE_SOURCE_DIR}/system
+   ${THREADX_INCLUDE_DIR}
 )
 
 # --- Sources
 # Add switch for target
 # Improvement: use target_sources() to avoid specifing those at add_executable() cmd
 set (PROJECT_SOURCES ${CMAKE_SOURCE_DIR}/app/main.c
-#                     ${THREADX_PROJECT_SOURCES}
+                     ${CMAKE_SOURCE_DIR}/app/app_threadx.c
+                     ${CMAKE_SOURCE_DIR}/system/tx_initialize_low_level.S
+                     ${THREADX_PROJECT_SOURCES}
 )
 
 # --- Linker
@@ -57,6 +76,7 @@ set (PROJECT_SOURCES ${CMAKE_SOURCE_DIR}/app/main.c
 
 # --- Project preprocessors
 add_compile_definitions(
+   TX_SINGLE_MODE_NON_SECURE
 )
 
 # --- Project compilation flags/parameters

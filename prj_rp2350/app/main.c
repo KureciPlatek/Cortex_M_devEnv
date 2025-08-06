@@ -14,6 +14,7 @@
 #include <stdio.h>
 #include "pico/stdlib.h"
 #include "pico/cyw43_arch.h"
+#include "app_threadx.h"
 
 int main(void)
 {
@@ -26,11 +27,8 @@ int main(void)
 
    while (true)
    {
-      printf("Hello, world!\n");
-      cyw43_arch_gpio_put(CYW43_WL_GPIO_LED_PIN, 1);
-      sleep_ms(250);
-      cyw43_arch_gpio_put(CYW43_WL_GPIO_LED_PIN, 0);
-      sleep_ms(250);
+      /* Create, init and start ThreadX for this project */
+      threadx_demo_start();
    }
    return 0;
 }
