@@ -100,7 +100,7 @@ _tx_initialize_low_level:
 
     /* Setup Vector Table Offset Register.  */
     MOV     r0, #0xE000E000                         // Build address of NVIC registers
-    LDR     r1, =__vectors                          // Pickup address of vector table
+    LDR     r1, =ram_vector_table                   // Pickup address of vector table
     STR     r1, [r0, #0xD08]                        // Set vector table address
 
     /* Enable the cycle count register.  */
@@ -111,7 +111,7 @@ _tx_initialize_low_level:
 
     /* Set system stack pointer from vector value.  */
     LDR     r0, =_tx_thread_system_stack_ptr        // Build address of system stack pointer
-    LDR     r1, =__vectors                          // Pickup address of vector table
+    LDR     r1, =ram_vector_table                   // Pickup address of vector table
     LDR     r1, [r1]                                // Pickup reset stack pointer
     STR     r1, [r0]                                // Save system stack pointer
 
@@ -204,7 +204,14 @@ SysTick_Handler:
     .thumb_func
 .type HardFault_Handler, function
 HardFault_Handler:
-    B       HardFault_Handler
+    MRS     R0, PSP
+    LDR     R1, =0xE000ED28    // SCB->CFSR address
+    LDR     R2, [R1]           // Read CFSR (Configurable Fault Status Register)
+    LDR     R1, =0xE000ED2C    // SCB->HFSR address
+    LDR     R3, [R1]           // Read HFSR (HardFault Status Register)
+    LDR     R1, =0xE000ED38    // SCB->BFAR address
+    LDR     R4, [R1]           // Read BFAR (Bus Fault Address Register)
+    B       .
 
 
     .section .text
