@@ -100,6 +100,7 @@ target_include_directories(${CMAKE_PROJECT_NAME} PUBLIC ${INCLUDE_DIR})
 target_link_libraries(${CMAKE_PROJECT_NAME} 
    pico_stdlib
    pico_cyw43_arch_none # LED accessible on PICO 2 W only through CYW43 Bluetooth+Wifi chip
+   cmsis_core
 )
 # Add .elf and .hex files
 pico_add_extra_outputs(${CMAKE_PROJECT_NAME})
