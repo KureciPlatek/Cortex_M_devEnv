@@ -12,11 +12,15 @@ Is to show that IDE just do some steps to combine different mandatory elements (
 >- VSCode, CMake
 >- Debuggers: STLink, Black Magic Debug Probe, JLink, Raspberry Debug Probe
 
-### Expected results:
+### To do
 
+>[!INFO] 
+>Detailed explanation about what to do for pending WIP tickers
 
-### Some conditions: 
-
+|  Ticket   | Details of work progress                                                                                                                                                                                                                                                                                                              |
+| :-------: | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **SFW_4** | Look at official ThreadX git repo, in ports/cm33/example/build/ and look at secure and non secure mode, how TZ is implemented and the function callback story (it seems that some callback have to be implemented when a Cortex-M has a TrustZone, recommended by ARM).<br>Look at how to debug a HardFault and LR corruption problem |
+|           |                                                                                                                                                                                                                                                                                                                                       |
 
 ### Steps, workflow
 
@@ -32,7 +36,8 @@ Is to show that IDE just do some steps to combine different mandatory elements (
 | SYS_1 | ==Process== Create a branch for each DevEnv or couple of DevEnv. Avoid a single, long linear Git line                                                                                                       | NEW   |
 | DOC_2 | ==ARM-Cortex== Explain and demystify CMSIS and other CMSIS (like DSP) files                                                                                                                                 | NEW   |
 | DOC_3 | ==Debug== Explain/demystify/depict the different debug interfaces, _DAP_, _TAP_, _JTAG_, _SWD_ etc..., their role, their physical interfaces, connectors (_SWD + UART_, 20 pins connectors etc..) and so on | NEW   |
-|       |                                                                                                                                                                                                             |       |
+| DOC_4 | ==Linker== Understand linke files and how they work together with reset_handlers and startup.s files                                                                                                        | NEW   |
+| SYS_2 | ==CMake== Restructure all CMake files for them to be better structured and more clean                                                                                                                       | NEW   |
 
 
 **Work In Progress issues:**  
