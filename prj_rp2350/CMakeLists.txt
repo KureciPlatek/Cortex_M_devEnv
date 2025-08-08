@@ -58,17 +58,19 @@ set (MFLOAT_ABI ${MFLOAT_ABI_HARD})  # depends on target and required compiling 
 # Hint: do not add path to pico-sdk include folders, as it will be handled later with target_link_libraries(pico_stdlib)
 set(INCLUDE_DIR
    ${CMAKE_SOURCE_DIR}/app
-   ${CMAKE_SOURCE_DIR}/system
-   ${THREADX_INCLUDE_DIR}
+   ${CMAKE_SOURCE_DIR}/lib
+#   ${CMAKE_SOURCE_DIR}/system
+#   ${THREADX_INCLUDE_DIR}
 )
 
 # --- Sources
 # Add switch for target
 # Improvement: use target_sources() to avoid specifing those at add_executable() cmd
 set (PROJECT_SOURCES ${CMAKE_SOURCE_DIR}/app/main.c
-                     ${CMAKE_SOURCE_DIR}/app/app_threadx.c
-                     ${CMAKE_SOURCE_DIR}/system/tx_initialize_low_level.S
-                     ${THREADX_PROJECT_SOURCES}
+                     ${CMAKE_SOURCE_DIR}/lib/mqtt_pico2w.c
+#                     ${CMAKE_SOURCE_DIR}/app/app_threadx.c
+#                     ${CMAKE_SOURCE_DIR}/system/tx_initialize_low_level.S
+#                     ${THREADX_PROJECT_SOURCES}
 )
 
 # --- Linker
@@ -76,7 +78,11 @@ set (PROJECT_SOURCES ${CMAKE_SOURCE_DIR}/app/main.c
 
 # --- Project preprocessors
 add_compile_definitions(
-   TX_SINGLE_MODE_NON_SECURE
+#   TX_SINGLE_MODE_NON_SECURE
+)
+
+add_compile_options(
+   -Wall
 )
 
 # --- Project compilation flags/parameters
@@ -101,6 +107,10 @@ target_link_libraries(${CMAKE_PROJECT_NAME}
    pico_stdlib
    pico_cyw43_arch_none # LED accessible on PICO 2 W only through CYW43 Bluetooth+Wifi chip
    cmsis_core
+   picow_iot
+   pico_cyw43_arch_lwip_poll
+   pico_lwip_mqtt
+   hardware_adc
 )
 # Add .elf and .hex files
 pico_add_extra_outputs(${CMAKE_PROJECT_NAME})
