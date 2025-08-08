@@ -90,6 +90,7 @@
             "includePath": [
                 "${workspaceRoot}/**",
                 "${workspaceRoot}/../pico-sdk/**",
+                "${workspaceRoot}/../FreeRTOS-Kernel/**",
                 "${workspaceRoot}/../x-cube-azrtos-h7/Middlewares/ST/threadx/common/**",
                 "${workspaceRoot}/../x-cube-azrtos-h7/Middlewares/ST/threadx/ports/**"
             ],

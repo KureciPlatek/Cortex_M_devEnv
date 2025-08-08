@@ -11,10 +11,14 @@
  */
 
 #include "board.h"
-#include "mqtt_pico2w.h"
-#include "pico/unique_id.h"   /* For pico_get_unique_board_id_string */
+// #include "mqtt_pico2w.h"
+// #include "pico/unique_id.h"   /* For pico_get_unique_board_id_string */
+#include "pico/multicore.h"
+#include "pico/cyw43_arch.h"
 
+#if MQTT_USE
 static MQTT_CLIENT_DATA_T mqttComm_handle;
+#endif
 
 int main(void)
 {
@@ -30,6 +34,9 @@ int main(void)
       return -1;
    }
 
+   /* Start our RTOS */
+   freeRtos_init();
+#if MQTT_USE
    /* Get pico board unique ID and create a client name out of it*/
 //   char unique_id_buf[5];
 //   pico_get_unique_board_id_string(unique_id_buf, sizeof(unique_id_buf));
@@ -110,5 +117,6 @@ int main(void)
    }
 
    printf("mqtt client exiting\n");
+#endif
    return 0;
 }
