@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.20)
 # Some options to provide to pico-sdk cmake files:
 # cmake -DCMAKE_BUILD_TYPE=Debug -DPICO_DEOPTIMIZED_DEBUG=1 ..
+set (CMAKE_BUILD_TYPE Debug)
+set (PICO_DEOPTIMIZED_DEBUG 1)
 # to avoid any optimistion
 
 # Be sure to have configured your PATHs drivers and external libraries in the following file:
@@ -48,18 +50,22 @@ include(${FREERSTOS_KERNEL_PATH}/portable/ThirdParty/GCC/RP2350_ARM_NTZ/FreeRTOS
 # --- Includes
 set(INCLUDE_DIR
    ${CMAKE_SOURCE_DIR}/app
+   ${CMAKE_SOURCE_DIR}/lib
 )
 
 # --- Sources
 set (PROJECT_SOURCES ${CMAKE_SOURCE_DIR}/app/main.c
                      ${CMAKE_SOURCE_DIR}/app/app_freeRtos.c
+                     ${CMAKE_SOURCE_DIR}/lib/mqtt_pico2w.c
+                     ${FREERSTOS_KERNEL_PATH}/portable/MemMang/heap_4.c # FreeRTOS stack/mem management style
 )
 
 # --- Project preprocessors
 add_compile_definitions(
-#   configNUMBER_OF_CORES=1 # Use both cores
-   configSUPPORT_STATIC_ALLOCATION=1   # When not specified, default to 0
-   configSUPPORT_DYNAMIC_ALLOCATION=0  # When not specified, default to 1
+#   configNUMBER_OF_CORES=1 # Overwrite number of cores. Set to 2 if use dual
+#   configSUPPORT_STATIC_ALLOCATION=0   # When not specified, default to 0
+#   configSUPPORT_DYNAMIC_ALLOCATION=1  # When not specified, default to 1
+   CYW43_LWIP=1
 )
 
 # --- Project compilation flags/parameters
@@ -76,12 +82,19 @@ pico_enable_stdio_usb(${CMAKE_PROJECT_NAME} 0)
 target_include_directories(${CMAKE_PROJECT_NAME} PUBLIC ${INCLUDE_DIR})
 
 # Add pico-sdk libraries
-target_link_libraries(${CMAKE_PROJECT_NAME} 
+target_link_libraries(${CMAKE_PROJECT_NAME}
    pico_stdlib
-   pico_cyw43_arch_none # LED accessible on PICO 2 W only through CYW43 Bluetooth+Wifi chip
+#   pico_cyw43_arch_none # LED accessible on PICO 2 W only through CYW43 Bluetooth+Wifi chip
    hardware_adc
+   # pico-sdk's CYW43 drivers and async context. Select between threadSafe and FreeRTOS
+#   pico_cyw43_arch_lwip_threadsafe_background
+   pico_cyw43_arch_lwip_sys_freertos
    pico_async_context_freertos
+   # pico-sdk's FreeRTOS
+   FreeRTOS-Kernel
    FreeRTOS-Kernel-Static
+   # MQTT lib
+   pico_lwip_mqtt
 )
 
 # Add .elf and .hex files

@@ -5,9 +5,9 @@
  *          Uses pico-sdk
  * @version 0.1
  * @date    2025-08-07
- * 
+ *
  * @copyright Copyright (c) 2025
- * 
+ *
  */
 
 #ifndef MQTT_PICO2W_H
@@ -18,12 +18,17 @@
 #include "hardware/gpio.h"
 #include "hardware/irq.h"
 #include "hardware/adc.h"
+#include "pico/async_context_freertos.h"  // Use of Asynchrone context of FreeRTOS (could be _poll.h or _threadsafe_background.h)
 #include "lwip/apps/mqtt.h"
 #include "lwip/apps/mqtt_priv.h"
 #include "lwip/dns.h"
-#include "lwip/altcp_tls.h"
+// #include "lwip/altcp_tls.h"
 
 #define MQTT_SERVER           "10.43.0.117"
+// No DNS stuff, go easy with IP addr: 10.43.0.117 = 0A.2B.00.75
+// If go on Noser guestWan:   IP addr: 10.43.18.0  = 0A.2B.12.00
+//#define MQTT_SERVER_HEXA      ((u32_t)0x0A2B0075UL)
+#define MQTT_SERVER_HEXA      ((u32_t)0x0A2B1200UL)
 #define MQTT_SERVER_PORT      1883  /* Often this port */
 #define MQTT_TOPIC_LEN        100
 #define MQTT_KEEP_ALIVE_S     60    /* Seconds */
@@ -45,7 +50,7 @@
 #define MQTT_PASSWORD         "m05qu1770"
 /* Wi-Fi config:
  * SSID:                   NoserWlanPortal
- * Protokoll:              Wi-Fi 5 (802.11ac) 
+ * Protokoll:              Wi-Fi 5 (802.11ac)
  * Security:               WPA2-Enterprise (encoding: AES)
  * Smartcard or other certificate
  * Canal:                  100
@@ -54,21 +59,26 @@
  * IPv4-DNS-Server:        10.0.128.188
  *                         10.0.128.189
  * DNS-Suffix:             nosergroup.lan
- * MAC:	                  90-65-84-E8-20-CE
+ *                         guest.lan
+ * MAC:	                   90-65-84-E8-20-CE
  */
-#define WIFI_SSID             "NoserWlanPortal" /* For Noser only */
-#define WIFI_PASSWORD         ""
+//#define WIFI_SSID             "NoserWlanPortal" /* For Noser only */
+#define WIFI_SSID             "GuestWLANPortal" /* For Noser only */
+#define WIFI_PASSWORD         "" /* No password on GuestWLAN */
 #define WIFI_CONN_TIMEOUT     30000 /* in millisec */
 
-/* How often measure temperature */
-#define TEMP_WORKER_TIME_S 10
+/* Asynchrone worker timeout.
+ A worker is called only one time. It is like a timer with an interrupt
+ Thank you guys to redevelop the wheel...
+ */
+#define MQTT_ASYNC_WORKER_TIMEOUT 1 /* ms */
 
 #ifdef MQTT_CERT_INC
 #include MQTT_CERT_INC
 #endif
 
 /**
- * @brief MQTT client handle. 
+ * @brief MQTT client handle.
  * It will be used by the project as main and unique handle
  */
 typedef struct {
@@ -87,7 +97,6 @@ typedef struct {
 float mqtt_read_adc(void);
 void control_led(MQTT_CLIENT_DATA_T *mqttComm_handle, bool on);
 void publish_adc(MQTT_CLIENT_DATA_T *mqttComm_handle);
-void dns_found(const char *hostname, const ip_addr_t *ipaddr, void *arg);
-
+void start_client(MQTT_CLIENT_DATA_T *state);
 
 #endif /* MQTT_PICO2W_H */

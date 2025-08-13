@@ -5,9 +5,9 @@
  *          Uses pico-sdk
  * @version 0.1
  * @date    2025-08-07
- * 
+ *
  * @copyright Copyright (c) 2025
- * 
+ *
  */
 
 #include "mqtt_pico2w.h"
@@ -22,8 +22,6 @@ static void mqtt_incoming_publish_cb(void *arg, const char *topic, u32_t tot_len
 static void adc_worker_fn(async_context_t *context, async_at_time_worker_t *worker);
 static void mqtt_connection_cb(mqtt_client_t *client, void *arg, mqtt_connection_status_t status);
 static void mqtt_incoming_data_cb(void *arg, const u8_t *data, u16_t len, u8_t flags);
-static void start_client(MQTT_CLIENT_DATA_T *mqtt_handle);
-
 
 /**
  * @brief asynchrone worker. Give it the function adc_worker_fn()
@@ -69,7 +67,7 @@ const char *full_topic(MQTT_CLIENT_DATA_T *mqtt_handle, const char *name)
 
 /**
  * @brief LED on or off
- * 
+ *
  * @param mqtt_handle [in/out] MQTT client mqtt_handle
  * @param on    [in] Activate or not
  */
@@ -84,8 +82,8 @@ void control_led(MQTT_CLIENT_DATA_T *mqtt_handle, bool on)
       cyw43_arch_gpio_put(CYW43_WL_GPIO_LED_PIN, 0);
    }
 
-   mqtt_publish(mqtt_handle->mqtt_client_inst, full_topic(mqtt_handle, "/led"), 
-                message, strlen(message), MQTT_PUBLISH_QOS, MQTT_PUBLISH_RETAIN, 
+   mqtt_publish(mqtt_handle->mqtt_client_inst, full_topic(mqtt_handle, "/led"),
+                message, strlen(message), MQTT_PUBLISH_QOS, MQTT_PUBLISH_RETAIN,
                 pub_request_cb, mqtt_handle);
 }
 
@@ -102,39 +100,17 @@ void publish_adc(MQTT_CLIENT_DATA_T *mqtt_handle)
       snprintf(adc_val_string, sizeof(adc_val_string), "%.2f", adc_val);
 
       printf("INFO Publishing %s to %s\n", adc_val_string, adc_topic_name);
-      mqtt_publish(mqtt_handle->mqtt_client_inst, adc_topic_name, 
-                   adc_val_string, strlen(adc_val_string), MQTT_PUBLISH_QOS, MQTT_PUBLISH_RETAIN, 
+      mqtt_publish(mqtt_handle->mqtt_client_inst, adc_topic_name,
+                   adc_val_string, strlen(adc_val_string), MQTT_PUBLISH_QOS, MQTT_PUBLISH_RETAIN,
                    pub_request_cb, mqtt_handle);
    }
 }
 
-/**
- * @brief Call back with a DNS result
- * @param hostname 
- * @param ipaddr 
- * @param arg 
- */
-void dns_found(const char *hostname, const ip_addr_t *ipaddr, void *arg)
-{
-   MQTT_CLIENT_DATA_T *mqtt_handle = (MQTT_CLIENT_DATA_T *)arg;
-   if (ipaddr)
-   {
-      mqtt_handle->mqtt_server_address = *ipaddr;
-      start_client(mqtt_handle);
-   }
-   else
-   {
-      panic("dns request failed");
-   }
-}
-
-
-
 /* ------ static methods ------ */
 /**
  * @brief Callback for publishing a request
- * @param arg 
- * @param err 
+ * @param arg
+ * @param err
  */
 static void pub_request_cb(__unused void *arg, err_t err)
 {
@@ -146,7 +122,7 @@ static void pub_request_cb(__unused void *arg, err_t err)
 
 /**
  * @brief Subscribe to a topic
- * 
+ *
  * @param arg ?
  * @param err ?
  */
@@ -162,7 +138,7 @@ static void sub_request_cb(void *arg, err_t err)
 
 /**
  * @brief Unsubscribe to a topic
- * 
+ *
  * @param arg ?
  * @param err ?
  */
@@ -186,9 +162,9 @@ static void unsub_request_cb(void *arg, err_t err)
 
 /**
  * @brief subscribe or unsubscribe to topics
- * 
+ *
  * @param mqtt_handle handle to MQTT communication
- * @param sub         [bool] true: subscribe to all topics, false, unsubscribe 
+ * @param sub         [bool] true: subscribe to all topics, false, unsubscribe
  */
 static void sub_unsub_topics(MQTT_CLIENT_DATA_T *mqtt_handle, bool sub)
 {
@@ -202,10 +178,10 @@ static void sub_unsub_topics(MQTT_CLIENT_DATA_T *mqtt_handle, bool sub)
 
 /**
  * @brief
- * @param arg 
- * @param data 
- * @param len 
- * @param flags 
+ * @param arg
+ * @param data
+ * @param len
+ * @param flags
  */
 static void mqtt_incoming_data_cb(void *arg, const u8_t *data, u16_t len, u8_t flags)
 {
@@ -246,10 +222,10 @@ static void mqtt_incoming_data_cb(void *arg, const u8_t *data, u16_t len, u8_t f
 
 
 /**
- * @brief 
- * @param arg 
- * @param topic 
- * @param tot_len 
+ * @brief
+ * @param arg
+ * @param topic
+ * @param tot_len
  */
 static void mqtt_incoming_publish_cb(void *arg, const char *topic, u32_t tot_len)
 {
@@ -259,9 +235,9 @@ static void mqtt_incoming_publish_cb(void *arg, const char *topic, u32_t tot_len
 
 
 /**
- * @brief 
- * @param context 
- * @param worker 
+ * @brief
+ * @param context
+ * @param worker
  */
 static void adc_worker_fn(async_context_t *context, async_at_time_worker_t *worker)
 {
@@ -272,10 +248,10 @@ static void adc_worker_fn(async_context_t *context, async_at_time_worker_t *work
 
 
 /**
- * @brief 
- * @param client 
- * @param arg 
- * @param status 
+ * @brief
+ * @param client
+ * @param arg
+ * @param status
  */
 static void mqtt_connection_cb(mqtt_client_t *client, void *arg, mqtt_connection_status_t status)
 {
@@ -310,37 +286,27 @@ static void mqtt_connection_cb(mqtt_client_t *client, void *arg, mqtt_connection
 
 /**
  * @brief start client
- * 
- * @param mqtt_handle 
+ *
+ * @param mqtt_handle
  */
-static void start_client(MQTT_CLIENT_DATA_T *mqtt_handle)
+void start_client(MQTT_CLIENT_DATA_T *mqttComm_handle)
 {
-#if LWIP_ALTCP && LWIP_ALTCP_TLS
-   const int port = MQTT_TLS_PORT;
-   printf("Using TLS\n");
-#else
    const int port = MQTT_PORT;
-   printf("Warning: Not using TLS\n");
-#endif
 
-   mqtt_handle->mqtt_client_inst = mqtt_client_new();
-   if (!mqtt_handle->mqtt_client_inst)
+   mqttComm_handle->mqtt_client_inst = mqtt_client_new();
+   if (!mqttComm_handle->mqtt_client_inst)
    {
       printf("MQTT client instance creation error");
    }
    printf("IP address of this device %s\n", ipaddr_ntoa(&(netif_list->ip_addr)));
-   printf("Connecting to mqtt server at %s\n", ipaddr_ntoa(&mqtt_handle->mqtt_server_address));
+   printf("Connecting to mqtt server at %s\n", ipaddr_ntoa(&mqttComm_handle->mqtt_server_address));
 
+   /* Shortly disable scheduler to execute connection() */
    cyw43_arch_lwip_begin();
-   if (mqtt_client_connect(mqtt_handle->mqtt_client_inst, &mqtt_handle->mqtt_server_address, port, mqtt_connection_cb, mqtt_handle, &mqtt_handle->mqtt_client_info) != ERR_OK)
+   if (mqtt_client_connect(mqttComm_handle->mqtt_client_inst, &mqttComm_handle->mqtt_server_address, port, mqtt_connection_cb, mqttComm_handle, &mqttComm_handle->mqtt_client_info) != ERR_OK)
    {
       printf("MQTT broker connection error");
    }
-#if LWIP_ALTCP && LWIP_ALTCP_TLS
-   // This is important for MBEDTLS_SSL_SERVER_NAME_INDICATION
-   mbedtls_ssl_set_hostname(altcp_tls_context(mqtt_handle->mqtt_client_inst->conn), MQTT_SERVER);
-#endif
-   mqtt_set_inpub_callback(mqtt_handle->mqtt_client_inst, mqtt_incoming_publish_cb, mqtt_incoming_data_cb, mqtt_handle);
+   mqtt_set_inpub_callback(mqttComm_handle->mqtt_client_inst, mqtt_incoming_publish_cb, mqtt_incoming_data_cb, mqttComm_handle);
    cyw43_arch_lwip_end();
 }
-

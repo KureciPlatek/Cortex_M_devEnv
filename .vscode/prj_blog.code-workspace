@@ -1,7 +1,40 @@
 {
 	"folders": [
-		{
-			"path": ".."
-		}
-	]
+      {
+         "path": ".."
+      },
+      {
+         "path": "../../prj_common"
+      }
+   ],
+   "settings": {
+      "files.associations": {
+         "stm32h7xx_it.h": "c",
+         "board.h": "c",
+         "stm32f4xx_hal.h": "c",
+         "stm32f4xx_hal_conf.h": "c",
+         "stm32f4xx.h": "c",
+         "stdlib.h": "c",
+         "pico.h": "c",
+         "gpio.h": "c",
+         "uart.h": "c",
+         "stdio.h": "c",
+         "cyw43_arch.h": "c",
+         "cyw43.h": "c",
+         "array": "c",
+         "deque": "c",
+         "forward_list": "c",
+         "string": "c",
+         "unordered_map": "c",
+         "vector": "c",
+         "iterator": "c",
+         "string_view": "c",
+         "span": "c",
+         "app_threadx.h": "c",
+         "altcp_tls.h": "c",
+         "dns.h": "c",
+         "mqtt_pico2w.h": "c",
+         "app_freertos.h": "c"
+      }
+   }
 }

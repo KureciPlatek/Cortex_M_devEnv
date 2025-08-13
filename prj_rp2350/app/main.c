@@ -11,14 +11,11 @@
  */
 
 #include "board.h"
-// #include "mqtt_pico2w.h"
+ #include "mqtt_pico2w.h"
 // #include "pico/unique_id.h"   /* For pico_get_unique_board_id_string */
 #include "pico/multicore.h"
-#include "pico/cyw43_arch.h"
 
-#if MQTT_USE
 static MQTT_CLIENT_DATA_T mqttComm_handle;
-#endif
 
 int main(void)
 {
@@ -28,15 +25,9 @@ int main(void)
    adc_set_temp_sensor_enabled(true);
    adc_select_input(4);
 
-   if (cyw43_arch_init())
-   {
-      printf("CYW43 Wi-Fi chip init failed\n");
-      return -1;
-   }
-
    /* Start our RTOS */
    freeRtos_init();
-#if MQTT_USE
+
    /* Get pico board unique ID and create a client name out of it*/
 //   char unique_id_buf[5];
 //   pico_get_unique_board_id_string(unique_id_buf, sizeof(unique_id_buf));
@@ -96,19 +87,13 @@ int main(void)
 
    // We are not in a callback so locking is needed when calling lwip
    // Make a DNS request for the MQTT server IP address
-   cyw43_arch_lwip_begin();
-   int err = dns_gethostbyname(MQTT_SERVER, &mqttComm_handle.mqtt_server_address, dns_found, &mqttComm_handle);
-   cyw43_arch_lwip_end();
-
-   /* Check if we have the MQTT broker address and if so, start client */
-   if (err == ERR_OK)
-   {
-      start_client(&mqttComm_handle);
-   }
-   else if (err != ERR_INPROGRESS)
-   {
-      printf("dns request failed");
-   }
+//   cyw43_arch_lwip_begin();
+//   int err = dns_gethostbyname(MQTT_SERVER, &mqttComm_handle.mqtt_server_address, dns_found, &mqttComm_handle);
+//   cyw43_arch_lwip_end();
+   ip_addr_t mqttBrokerIP;
+   mqttBrokerIP.addr = MQTT_SERVER_HEXA;
+   mqttComm_handle.mqtt_server_address = mqttBrokerIP;
+   start_client(&mqttComm_handle);
 
    while (!mqttComm_handle.connect_done || mqtt_client_is_connected(mqttComm_handle.mqtt_client_inst))
    {
@@ -117,6 +102,5 @@ int main(void)
    }
 
    printf("mqtt client exiting\n");
-#endif
    return 0;
 }
