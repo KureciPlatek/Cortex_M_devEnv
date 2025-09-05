@@ -1,9 +1,10 @@
 
-all install and setup is quite easy.
+Install and setup is quite easy.
 
+# Setup environment
 ## CMake config
 
-Use CMakeLists.txt file as simple as possible.
+Keep CMakeLists.txt file as simple as possible.
 
 - Install pico-sdk with github clone of repo
 - Do the submodule init & install
@@ -16,6 +17,16 @@ No need to configure UART for printf() it is done automatically it seems
 Download picotool and put it somewhere you like. Download: [Releases · raspberrypi/pico-sdk-tools](https://github.com/raspberrypi/pico-sdk-tools/releases) Then I installed it in /opt/ on Linux and gave the path to CMake with:
 `set(picotool_DIR /opt/picotool)`
 
+>[!Hint]
+>Do not add path to pico-sdk include folders, as it will be handled later with target_link_libraries(pico_stdlib)
+
+set(PICO_BOARD pico2_w):
+Set pico-sdk's PICO_BOARD to pico2_w (RP2350 W). Other values are pico, pico_w and pico2
+
+set(picotool_DIR /opt/picotool)
+Set picotool path (picotool was placed in /opt/ arbitrarily. Could be placed anywhere)
+
+
 ### OpenOCD config to flash & debug with RP Debug probe
 
 After an apt-get upgrade of openocd, I did got all rp2350 config file. Executing 
@@ -24,10 +35,11 @@ sudo openocd -f interface/cmsis-dap.cfg -f target/rp2040.cfg -c "adapter speed 5
 ```
 Did worked perfectly.
 
-### Blink
+# Blink
+
 I had to set PICO_BOARD to pico2_w and link project with pico_cyw43_arch_none as pico board must go through CYW43 Bluetooth + WiFi chip to control LED on PICO2W board
 
-## ThreadX on RP2350 PICO2_W board
+# ThreadX on RP2350 PICO2_W board
 
 Use of azure-rtos from STMicroelectronics provided git repo but should be fine
 
@@ -81,6 +93,15 @@ Check if all IRQ handler are required:
 
 Otherwise all irq are declared and defined in both cortex-M architectures. 
 
+>[!IMPORTANT]
+>Add following line to CMakeLists.txt:
+>```CMake
+>target_link_libraries(${CMAKE_PROJECT_NAME} 
+>    pico_stdlib
+>    cmsis_core # Solves the problem
+>```
+>It will call `rename_exceptions.h` from pico-sdk and it will rename all pic-sdk like core exceptions to CMSIS-like exceptions
+
 ### Error while linking
 
 I had the error:
@@ -90,6 +111,7 @@ I had the error:
 /usr/lib/gcc/.../arm-none-eabi/bin/ld: no address assigned to the veneers output section .gnu.sgstubs
 ```
 Which slides all sections at linking and generates many warnings:
+
 ```bash
 /usr/lib/gcc/.../arm-none-eabi/bin/ld: prj_rp.elf: warning: allocated section `.text' not in segment
 /usr/lib/gcc/.../arm-none-eabi/bin/ld: prj_rp.elf: warning: allocated section `.rodata' not in segment
@@ -104,27 +126,28 @@ Citing ARM:
 > In Arm GNU toolchain, the linker allocates the veneer code of Secure APIs in the .gnu.sgstubs section. You must place this section in the Secure Non-secure Callable (NSC) region in the GCC linker script .ld file. The following snippet shows you how to place veneer section in the NSC region. You should set __STACKSEAL_SIZE to 8 in the linker script to reserve the memory space for secure stack sealing.
 
 Which means we have to add the following lines in linker file:
-```ld
-__ROM_BASE_NSC =  0x101FFC00;    
-__ROM_SIZE_NSC =  0x400; 
-
-MEMORY
-{
-    FLASH_NSC (rx)  : ORIGIN = __ROM_BASE_NSC, LENGTH = __ROM_SIZE_NSC
-}
-
-.gnu.sgstubs :
-{
-    . = ALIGN(32);
-    *(.gnu.sgstubs*)   
-} > FLASH_NSC
-```
+>[!code]
+>```ld
+> __ROM_BASE_NSC =  0x101FFC00;    
+> __ROM_SIZE_NSC =  0x400; 
+> 
+> MEMORY
+> {
+>     FLASH_NSC (rx)  : ORIGIN = __ROM_BASE_NSC, LENGTH = __ROM_SIZE_NSC
+> }
+> 
+> .gnu.sgstubs :
+> {
+>     . = ALIGN(32);
+>     *(.gnu.sgstubs*)   
+> } > FLASH_NSC
+> ```
 
 To add .gnu.sgstubs in Secure Non-secure Callable (NSC) SRAM section
 
-How to hack it all baby:
+**How to hack it all baby**:
 
-in memmap_default.ld, whe have:
+in `memmap_default.ld`, we have:
 ```ld
 MEMORY
 {
@@ -136,11 +159,9 @@ MEMORY
 ```
 
 So in "pico_flash_region.ld" we are gonna add some stuff
-
 -> Give space to a memory for secure action of 8K as demanded by ARM
 
-So I did in the ./bin/pico_flash_region.ld is add:
-
+So what I did in the ./bin/pico_flash_region.ld is add:
 ```ld
 FLASH(rx) : ORIGIN = 0x10000000, LENGTH = (4 * 1024 * 1024) - 8192
 FLASH_NSC(rx)  : ORIGIN = 0x103FE000, LENGTH = 8K
@@ -154,14 +175,31 @@ And add on default memory map manager linker file (memmap.ld):
     } >FLASH_NSC
 ```
 And it links.
-But errors at startup are not good
 
-### tx_user.h
+But errors at startup are still not good...
 
+**`tx_user.h`**
 Take tx_user_sample.h from azureRTOSThreadx/common/include/ and rename it tx_user.h. Is arch independent and configures only ThreadX common files (behavior)
-
 
 ## Debug
 
 svd file may be found in sdk-pico, at src/rp2350/hardware_regs/rp2350.svd
 
+
+
+# FreeRTOS
+
+Warning, clone of official repository of FreeRTOS does not necessarily contains all required ports:
+https://github.com/FreeRTOS/FreeRTOS-Kernel.git
+
+It is like OpenOCD and it is better to clone FreeRTOS from Raspberry:
+https://github.com/raspberrypi/FreeRTOS-Kernel.git
+
+In target_link_libraries(), se set to FreeRTOS-Kernel-Static
+Static to use static memory instead of a dynamic heap for allocations. 
+Set to FreeRTOS-Kernel-Heap4 for dynamic
+
+
+## Use of CYW43 Wi-Fi chip
+
+cyw43_arch_enable_ap_mode(); Would be to create an access point for other to connect to

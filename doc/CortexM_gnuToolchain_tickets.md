@@ -17,10 +17,11 @@ Is to show that IDE just do some steps to combine different mandatory elements (
 >[!INFO] 
 >Detailed explanation about what to do for pending WIP tickers
 
-|  Ticket   | Details of work progress                                                                                                                                                                                                                                                                                                              |
-| :-------: | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **SFW_4** | Look at official ThreadX git repo, in ports/cm33/example/build/ and look at secure and non secure mode, how TZ is implemented and the function callback story (it seems that some callback have to be implemented when a Cortex-M has a TrustZone, recommended by ARM).<br>Look at how to debug a HardFault and LR corruption problem |
-|           |                                                                                                                                                                                                                                                                                                                                       |
+|       Ticket       | Details of work progress                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+| :----------------: | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+|     **SFW_4**      | ==DevEnv7== RP2350, ThreadX<br>Look at official ThreadX git repo, in ports/cm33/example/build/ and look at secure and non secure mode, how TZ is implemented and the function callback story (it seems that some callback have to be implemented when a Cortex-M has a TrustZone, recommended by ARM).<br>Look at how to debug a HardFault and LR corruption problem<br>Seems that RP2350 always boot in Secure code, maybe is NSC and Secure ThreadX required |
+| **Actual thought** | ==DevEnv7== RP2350, FreeRTOS<br>Start of mqtt client has to be in a task<br>cyw43_async_init() has to be called in an asynchrone context.<br>-> Is async_worker_ really necessary? Could it not be just started from a task?<br>Create sequence of creation. <br>    - Call of cyw43_init()<br>	- creation of client<br>	- start_client()<br>	- Blink<br>	- FreeRTOS creation and launch()                                                                     |
+|                    |                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
 
 ### Steps, workflow
 
@@ -37,7 +38,7 @@ Is to show that IDE just do some steps to combine different mandatory elements (
 | DOC_2 | ==ARM-Cortex== Explain and demystify CMSIS and other CMSIS (like DSP) files                                                                                                                                 | NEW   |
 | DOC_3 | ==Debug== Explain/demystify/depict the different debug interfaces, _DAP_, _TAP_, _JTAG_, _SWD_ etc..., their role, their physical interfaces, connectors (_SWD + UART_, 20 pins connectors etc..) and so on | NEW   |
 | DOC_4 | ==Linker== Understand linke files and how they work together with reset_handlers and startup.s files                                                                                                        | NEW   |
-| SYS_2 | ==CMake== Restructure all CMake files for them to be better structured and more clean                                                                                                                       | NEW   |
+| SYS_2 | ==CMake== Restructure all CMake files for them to be better structured and more clean<br>- Improvement: use target_sources() to avoid specifing those at add_executable() cmd                               | NEW   |
 
 
 **Work In Progress issues:**  
@@ -78,11 +79,11 @@ Is to show that IDE just do some steps to combine different mandatory elements (
 
 **Work In Progress issues:**  
 
-| Issue | Description                                                                                                         | state                                                               |
-| ----- | ------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------- |
-| SFW_9 | ==DevEnv6== STM32H7, ThreadX (Eclipseless), BlackMagic debug probe, STMCubeless (keep only required specific files) | WIP - #64e11c9<br>Still have to do JLink and BlackMagic             |
-| SFW_4 | ==DevEnv7== RP2350, ThreadX (Eclipseless), Raspberry Debug Probe                                                    | WIP - #1b0f7a7<br>Has a core HardFault IRQ when executing scheduler |
-|       |                                                                                                                     |                                                                     |
+| Issue  | Description                                                                                                         | state                                                                          |
+| ------ | ------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
+| SFW_9  | ==DevEnv6== STM32H7, ThreadX (Eclipseless), BlackMagic debug probe, STMCubeless (keep only required specific files) | WIP - #64e11c9<br>Still have to do JLink and BlackMagic                        |
+| SFW_4  | ==DevEnv7== RP2350, ThreadX (Eclipseless), Raspberry Debug Probe                                                    | WIP - #1b0f7a7<br>Has a core HardFault IRQ when executing scheduler            |
+| SFW_11 | ==DevEnv8== RP2350, FreeRTOS, Raspberry Debug Probe, MQTT                                                           | WIP - #f267a82<br>Use FreeRTOS as async env and wip on good startup/cyw43 init |
 
 
 **Resolved issues:**
