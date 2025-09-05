@@ -19,6 +19,15 @@ set (MCU_FAMILY_LOWERCASE ${LOWERCASE_MCU_FAMILY_H7})
 set (CMAKE_PROJECT_NAME prj_${MCU_FAMILY_LOWERCASE})
 ```
 
+# Structure for all projects
+
+### cortex_m_toolchain.cmake
+
+I tend to keep all projects with their lib and external sources near to each other but it is purely an opinion and scatter those sources across your PC is also a good option. The idea here is to tell to CMake the most common folder for all external source, then in more specific_target_lib_and_sources.cmake files, define the clear path to them. How I organized it could DEFINITELY be modified.
+
+### cortex_m_rtos.cmake
+
+
 # For STM32 family
 
 We require the HAL for each STM32's families of microcontroller: STM32H7 and STM32F4. HAL are indeed too different between STM32's families that two different set of HAL are required (you may find each HAL sources on STMicroelectronics GitHub repositories)
@@ -47,16 +56,32 @@ set (HAL_PROJECT_SOURCES
 ...
 ```
 
+
+#### Possible improvements:
+
+- add_custom_command() for hex and bin files
+- add_custom_command() to flash automatically and start debug session if debug?
+- Add command to flas over STLink or start with debugger and so on (see later)
+- Use target_sources() to avoid specifing those at add_executable() cmd
+- 
+
 # For RP family
 
+>[!Hint] 
+>Do not add path to pico-sdk include folders, as it will be handled later with target_link_libraries(pico_stdlib)
 
-# On Linux
+
+Some options to provide to pico-sdk cmake files:
+`cmake -DCMAKE_BUILD_TYPE=Debug -DPICO_DEOPTIMIZED_DEBUG=1`
+to avoid any optimistion
+
+## Specificities on Linux
 
 Nothing to declare
 
-# On Windows
+## Specificities on Windows
 
-## MinGW and the lovely backslashes
+### MinGW and the lovely backslashes
 
 To generate on Windows, thank to the "Stop thinking Windows is good", I just blocked for a couple of minutes because you have to specify to generate makefile for MinGW style (no idea why and I don't want to know why):
 
@@ -74,8 +99,7 @@ It may surely changes if you selected another make alternative for Windows (ninj
 >They are the only one using "\\" instead of "/", which make all path useless on `CMakeLists.txt`. Yay.
 >So when writing decoupled CMake files, as platform independent as possible, I wanted to use `${HOME}` environment variable, sadly, for Windows, `${HOMEPATH}` provides a path with "\\", which will generate errors. So I had to put my full path in `stm32.cmake` file.
 
-
-# CMake feedback
+# General CMake opinion
 
 I find generally that people overuse CMake and its many functions for same functionality. 
 
@@ -94,7 +118,7 @@ Or
 add_compile_options(-Wall)
 ```
 
-**But those two ways bring different compilation results!!!**
+**But those two ways bring different compilation results**
 
 - In the first case, I have an error thrown:
 ```bash
@@ -116,4 +140,4 @@ set_source_files_properties(
     )
 ```
 
-I mean, how many ways we can do that? On my opinion, it leads to the kind of problem I encountered earlier. Too many options = too many things to manage and maintain = increase risk of non understandable problems
+I mean, how many ways we can do that? On my opinion, it leads to the kind of problem I encountered earlier. Too many options = too many things to manage and maintain = increased risk of non understandable problems.
