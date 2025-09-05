@@ -84,7 +84,7 @@ After some research, there is an Installer on Windows that does it all, but will
 - [Git for Windows](https://git-scm.com/download/win)
 - [Visual Studio Code](https://code.visualstudio.com/)
 - [OpenOCD](https://github.com/openocd-org/openocd/)
-So let's docker it all baby..
+So let's docker it all baby...
 
 >[!WARNING] 
 >Also, this installer won't be supported anymore and there is no clear procedure about the different elements required so I actually gave up to do it manually on Windows.
@@ -185,8 +185,13 @@ drwxr-xr-x 8 jeremie jeremie   4096 Jun 15 20:46 share/
 ```
 
 
+>[!CONCLUSION]
+>The Pico-SDK from VSCode installs also, like STM32CubeIDE, all elements/required libs/programs are re-installed, in the folder.
+>I don't like this way of doing it. Yeah it is like "_plug and play_", full development environment is ready. But like STM32CubeIDE, it leads to super heavy development environment, with few sight over which version we have and son on. We just rely on what the IDE gives us and we are not going in the direction of knowing and controlling the inputs of our project.
+>No wonder we need 2 TB hard-drive on Windows now...
 
-
+>[!QUESTION]
+>Here it is up to the developer to choose between a fight and control over its environment or letting the machine controlling for us
 
 # Environment of an RP2040 with Raspberry Pi debug probe
 
@@ -197,12 +202,10 @@ drwxr-xr-x 8 jeremie jeremie   4096 Jun 15 20:46 share/
 >When looking for Pico SDK, be careful not to find the `/etc/alternatives/pico -> /bin/nano` which is actually the Nano (Nano's ANOther editor) which is inspired by `Pico` editor (Pine Composer)
 
 
-
 ## Debug:
 
 Seems to use DebugProbe (CMSIS-DAP) [Default] -> DebugProbe uses DAP
 Or selection of SWD -> Pi Host, on Pi 5 requires Linux Kernel > 6.6
-
 
 
 ### Things important
