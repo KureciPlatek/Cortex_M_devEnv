@@ -24,9 +24,7 @@ int main(void)
    adc_init();
    adc_set_temp_sensor_enabled(true);
    adc_select_input(4);
-
-   /* Start our RTOS */
-   freeRtos_init();
+   printf("Start program\n");
 
    /* Get pico board unique ID and create a client name out of it*/
 //   char unique_id_buf[5];
@@ -77,14 +75,6 @@ int main(void)
 //#endif
 #endif
 
-   /* Enable W-Fi on pico2_w */
-   cyw43_arch_enable_sta_mode();
-   if (cyw43_arch_wifi_connect_timeout_ms(WIFI_SSID, WIFI_PASSWORD, CYW43_AUTH_WPA2_AES_PSK, WIFI_CONN_TIMEOUT))
-   {
-      printf("Failed to connect");
-   }
-   printf("\nConnected to Wifi\n");
-
    // We are not in a callback so locking is needed when calling lwip
    // Make a DNS request for the MQTT server IP address
 //   cyw43_arch_lwip_begin();
@@ -93,13 +83,17 @@ int main(void)
    ip_addr_t mqttBrokerIP;
    mqttBrokerIP.addr = MQTT_SERVER_HEXA;
    mqttComm_handle.mqtt_server_address = mqttBrokerIP;
-   start_client(&mqttComm_handle);
 
-   while (!mqttComm_handle.connect_done || mqtt_client_is_connected(mqttComm_handle.mqtt_client_inst))
-   {
-      cyw43_arch_poll();
-      cyw43_arch_wait_for_work_until(make_timeout_time_ms(10000));
-   }
+   /* Start RTOS */
+   printf("Init FreeRTOS\n");
+   freeRtos_init(&mqttComm_handle);
+
+//   while (!mqttComm_handle.connect_done || mqtt_client_is_connected(mqttComm_handle.mqtt_client_inst))
+//   {
+//      cyw43_arch_poll();
+//      cyw43_arch_wait_for_work_until(make_timeout_time_ms(10000));
+//   }
+   while(true) {}
 
    printf("mqtt client exiting\n");
    return 0;

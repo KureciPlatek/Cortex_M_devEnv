@@ -10,18 +10,15 @@
  *
  */
 
+#include "board.h" 
 #include "app_freeRtos.h"
 #include "pico/cyw43_arch.h"
-#include "mqtt_pico2w.h"
-
-/* ASynchrone worker in which our worker (async_task_function()) will be executed */
-async_at_time_worker_t _async_task_worker = {.do_work = async_task_function};
 
 /**
  * @brief Simple blinky FreeRTOS task
  * @param params set of params if required
  */
-void task_threadOne(__unused void *params)
+void task_thread_blink(__unused void *params)
 {
    while (1)
    {
@@ -37,43 +34,37 @@ void task_threadOne(__unused void *params)
  * @brief Simple blinky FreeRTOS task
  * @param params set of params if required
  */
-void task_threadTwo(void *params)
+void task_thread_mqtt(void *params)
 {
-   while (1)
-   {
-      printf("FreeRTOS thread two\n");
-      cyw43_arch_gpio_put(CYW43_WL_GPIO_LED_PIN, 0);
-      vTaskDelay(250);
-      cyw43_arch_gpio_put(CYW43_WL_GPIO_LED_PIN, 1);
-      vTaskDelay(250);
-   }
-}
-
-// async workers run in their own thread when using async_context_freertos_t with priority WORKER_TASK_PRIORITY
-static void async_task_function(async_context_t *context, async_at_time_worker_t *worker)
-{
-   /* Fire our worker again so that this function is constantly refired
-    with a timeout of MQTT_ASYNC_WORKER_TIMEOUT */
-   async_context_add_at_time_worker_in_ms(context, worker, MQTT_ASYNC_WORKER_TIMEOUT);
-   static uint32_t count = 0;
-   printf("Hello from worker count=%u\n", count++);
-}
-
-
-void main_task(__unused void *params)
-{
-   /* Create async worker to create an asynchrone context (required by MQTT)*/
-   async_context_t *_context = create_async_context();
-   /* Add _async_task_worker to our context asynchrone "at time" context */
-   async_context_add_at_time_worker_in_ms(_context, &_async_task_worker, 0);
-   xTaskCreate(task_threadOne, "BlinkThread", TASK_ONE_STACK_SIZE, NULL, TASK_ONE_PRIORITY, NULL);
-
    /* Init cyw43 in a FreeRTOS context */
    if (cyw43_arch_init())
    {
-      printf("CYW43 Wi-Fi chip init failed\n");
-      return -1;
+      printf("CYW43 asynchrone context init failed\n");
+      vTaskDelete(NULL);
    }
+
+   /* Enable W-Fi on pico2_w */
+   cyw43_arch_enable_sta_mode();
+   printf("[INFO] WiFi enabled\n");
+
+   /* Connect to specific Wi-Fi */
+   if (cyw43_arch_wifi_connect_timeout_ms(WIFI_SSID, WIFI_PASSWORD, CYW43_AUTH_WPA2_AES_PSK, WIFI_CONN_TIMEOUT))
+   {
+      printf("[ERR] Failed to connect to WiFi");
+      cyw43_arch_deinit();
+      vTaskDelete(NULL);
+   }
+   printf("[INFO] Connected to Wifi\n");
+
+   MQTT_CLIENT_DATA_T* mqttHandle = (MQTT_CLIENT_DATA_T*)(params);
+
+   /* Connect to MQTT broker and start MQTT handling */
+   if(true != mqtt_start_client(mqttHandle))
+   {
+      cyw43_arch_deinit();
+      vTaskDelete(NULL);
+   }
+   printf("[INFO] MQTT client started\n");
 
    while (true)
    {
@@ -85,23 +76,29 @@ void main_task(__unused void *params)
          printf("main task is on core %d\n", last_core_id);
       }
 #endif
-      printf("Hello from main task count=%u\n", count++);
+      if(!mqttHandle->connect_done)
+      {
+         printf("Disconnected from MQTT broker\n");
+      }
+      printf("Hello from main task\n");
+      // Publish value of ADC
+      publish_adc(mqttHandle);
       vTaskDelay(3000);
    }
 }
 
-void freeRtos_init(void)
+void freeRtos_init(MQTT_CLIENT_DATA_T *mqttComm_handle)
 {
-   TaskHandle_t taskOne;
-   TaskHandle_t taskTwo;
+   TaskHandle_t task_blink;
+   TaskHandle_t task_mqtt;
 
    /* This situation is for a SMP DYNAMIC configuration of FreeRTOS (dynamic seems required by MQTT) */
    /* Be careful to have set configSUPPORT_DYNAMIC_ALLOCATION to 1 in FreeRTOS config header */
-   xTaskCreate(task_threadOne, "taskOne", TASK_ONE_STACK_SIZE, NULL, TASK_ONE_PRIORITY, &taskOne);
-   xTaskCreate(task_threadTwo, "taskTwo", TASK_TWO_STACK_SIZE, NULL, TASK_TWO_PRIORITY, &taskTwo);
+   xTaskCreate(task_thread_blink, "BlinkThread", TASK_ONE_STACK_SIZE, NULL, TASK_ONE_PRIORITY, &task_blink);
+   xTaskCreate(task_thread_mqtt, "mqtt_client", TASK_TWO_STACK_SIZE,  (void*)mqttComm_handle, TASK_TWO_PRIORITY, &task_mqtt);
 
-   vTaskCoreAffinitySet(taskOne, 0);
-   vTaskCoreAffinitySet(taskTwo, 1);
+   vTaskCoreAffinitySet(task_blink, 0);
+   vTaskCoreAffinitySet(task_mqtt, 1);
 
    /* Start the tasks and timer running. */
    vTaskStartScheduler();

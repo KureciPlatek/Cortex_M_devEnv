@@ -16,6 +16,7 @@
 #include "pico/stdlib.h"
 #include "pico/cyw43_arch.h"
 #include "FreeRTOS.h"
+#include "mqtt_pico2w.h"
 #include "app_freeRtos.h"
 #include "hardware/adc.h"
 

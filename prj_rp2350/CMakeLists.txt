@@ -66,6 +66,7 @@ add_compile_definitions(
 #   configSUPPORT_STATIC_ALLOCATION=0   # When not specified, default to 0
 #   configSUPPORT_DYNAMIC_ALLOCATION=1  # When not specified, default to 1
    CYW43_LWIP=1
+   PICO_CYW43_ARCH_FREERTOS=1
 )
 
 # --- Project compilation flags/parameters
@@ -91,9 +92,9 @@ target_link_libraries(${CMAKE_PROJECT_NAME}
    pico_cyw43_arch_lwip_sys_freertos
    pico_async_context_freertos
    # pico-sdk's FreeRTOS
-   FreeRTOS-Kernel
-   FreeRTOS-Kernel-Static
-   # MQTT lib
+#   FreeRTOS-Kernel
+   FreeRTOS-Kernel-Heap4 # Could be -Static or any other heap implementation proposed by FreeRTOS
+   # lwIP MQTT lib
    pico_lwip_mqtt
 )
 

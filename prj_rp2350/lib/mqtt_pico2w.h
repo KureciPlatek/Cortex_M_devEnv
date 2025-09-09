@@ -13,18 +13,18 @@
 #ifndef MQTT_PICO2W_H
 #define MQTT_PICO2W_H
 
-#include "board.h"
-
 #include "hardware/gpio.h"
 #include "hardware/irq.h"
 #include "hardware/adc.h"
 #include "pico/async_context_freertos.h"  // Use of Asynchrone context of FreeRTOS (could be _poll.h or _threadsafe_background.h)
+#include "pico/cyw43_arch.h"
 #include "lwip/apps/mqtt.h"
 #include "lwip/apps/mqtt_priv.h"
 #include "lwip/dns.h"
 // #include "lwip/altcp_tls.h"
 
-#define MQTT_SERVER           "10.43.0.117"
+// #define MQTT_SERVER           "10.43.0.117"
+#define MQTT_SERVER           "10.42.0.1" // RPi5 wifi hotspot
 // No DNS stuff, go easy with IP addr: 10.43.0.117 = 0A.2B.00.75
 // If go on Noser guestWan:   IP addr: 10.43.18.0  = 0A.2B.12.00
 //#define MQTT_SERVER_HEXA      ((u32_t)0x0A2B0075UL)
@@ -39,8 +39,8 @@
 // #define MQTT_FULL_TOPIC       /* Activate to add client ID to topic name like MQTT_DEVICE_NAME/sub/topic/name */
 
 // topic used for last will and testament
-#define MQTT_WILL_TOPIC       "/online"
-#define MQTT_WILL_MSG         "0"
+#define MQTT_WILL_TOPIC       "rpi5_topic"
+#define MQTT_WILL_MSG         "Hello from Pico W!"
 #define MQTT_WILL_QOS         1
 #define MQTT_DEVICE_NAME      "pico2w_jerem"
 
@@ -60,11 +60,21 @@
  *                         10.0.128.189
  * DNS-Suffix:             nosergroup.lan
  *                         guest.lan
- * MAC:	                   90-65-84-E8-20-CE
+ * MAC:	                  90-65-84-E8-20-CE
+ * 
+ * sudo nmcli device wifi hotspot ssid IoT_HS password 107_H5_4242
+ * Device 'wlan0' successfully activated with '72989d1b-e195-49e0-b7ae-c2f58329611f'.
+ * Hint: "nmcli dev wifi show-password" shows the Wi-Fi name and password
+ * 
+ * Send a message to subscriber:
+ * $~: mosquitto_pub -d -t rpi5_topic -m "Prout" -u RPI5_JEREM -P m05qu1770 -h 10.42.0.1 
+ * 
+ * Receive a message:
+ * $~: mosquitto_sub -d -t rpi5_topic_2 -u RPI5_JEREM -P m05qu1770 -h 10.42.0.1
  */
 //#define WIFI_SSID             "NoserWlanPortal" /* For Noser only */
-#define WIFI_SSID             "GuestWLANPortal" /* For Noser only */
-#define WIFI_PASSWORD         "" /* No password on GuestWLAN */
+#define WIFI_SSID             "IoT_HS" /* For Noser only */
+#define WIFI_PASSWORD         "107_H5_4242" /* No password on GuestWLAN */
 #define WIFI_CONN_TIMEOUT     30000 /* in millisec */
 
 /* Asynchrone worker timeout.
@@ -97,6 +107,6 @@ typedef struct {
 float mqtt_read_adc(void);
 void control_led(MQTT_CLIENT_DATA_T *mqttComm_handle, bool on);
 void publish_adc(MQTT_CLIENT_DATA_T *mqttComm_handle);
-void start_client(MQTT_CLIENT_DATA_T *state);
+bool mqtt_start_client(MQTT_CLIENT_DATA_T *mqttComm_handle);
 
 #endif /* MQTT_PICO2W_H */

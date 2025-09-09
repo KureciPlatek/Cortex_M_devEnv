@@ -14,6 +14,7 @@
 #define APP_FREERTOS_H
 
 #include "board.h"
+#include "pico/cyw43_arch.h"
 #include "task.h" /* FreeRTOS */
 
 /* Define priorities of tasks */
@@ -24,16 +25,9 @@
 
 /**
  * @brief  Init and start FreeRTOS
- * @param  none
+ *         Also, init, creates and handle MQTT in an asynchrone context
+ * @param  mqttComm_handle  MQTT_CLIENT_DATA_T handle to MQTT client
  */
-void freeRtos_init(void);
-
-/**
- * @brief Function which will be called each time asynchrone task _async_task_worker will fire
- *        (through a timeout)
- * @param context asynchrone context of this function
- * @param worker  worker containing this function (I guess)
- */
-static void async_task_function(async_context_t *context, async_at_time_worker_t *worker);
+void freeRtos_init(MQTT_CLIENT_DATA_T *mqttComm_handle);
 
 #endif /* APP_FREERTOS_H */

@@ -94,7 +94,7 @@
                 "${workspaceRoot}/../x-cube-azrtos-h7/Middlewares/ST/threadx/common/**",
                 "${workspaceRoot}/../x-cube-azrtos-h7/Middlewares/ST/threadx/ports/**"
             ],
-//            "defines": ["STM32H723xx"], // STM32H723xx for intelliSense to fetch HAL and STM's definitions
+            "defines": ["PICO_CYW43_ARCH_FREERTOS"], // For intelliSense
             "cStandard": "c17",
             "cppStandard": "gnu++17",
             "intelliSenseMode": "gcc-arm",
