@@ -252,6 +252,7 @@ static void pub_request_cb(__unused void *arg, err_t err)
  */
 static void mqtt_connection_cb(mqtt_client_t *client, void *arg, mqtt_connection_status_t status)
 {
+   printf("[INFO] mqtt conn cb\n");
    MQTT_CLIENT_DATA_T *mqtt_handle = (MQTT_CLIENT_DATA_T *)arg;
    if (status == MQTT_CONNECT_ACCEPTED)
    {
@@ -302,6 +303,7 @@ bool mqtt_start_client(MQTT_CLIENT_DATA_T *mqttComm_handle)
    }
    else
    {
+      success = true;
       printf("IP address of this device %s\n", ipaddr_ntoa(&(netif_list->ip_addr)));
       printf("Connecting to mqtt server at %s\n", ipaddr_ntoa(&mqttComm_handle->mqtt_server_address));
    }
@@ -310,11 +312,13 @@ bool mqtt_start_client(MQTT_CLIENT_DATA_T *mqttComm_handle)
    {
       /* As lwIP API is not thread safe (function mqtt_client_connect()), we have to acquire a lock, prior to call it */
       cyw43_arch_lwip_begin();
+      printf("Good\n");
       if (ERR_OK != mqtt_client_connect(mqttComm_handle->mqtt_client_inst, &mqttComm_handle->mqtt_server_address, port, mqtt_connection_cb, mqttComm_handle, &mqttComm_handle->mqtt_client_info))
       {
          printf("MQTT broker connection error\n");
          success = false;
       }
+      printf("[INFO] connected\n");
 //      mqtt_set_inpub_callback(mqttComm_handle->mqtt_client_inst, mqtt_incoming_publish_cb, mqtt_incoming_data_cb, mqttComm_handle);
       /* Release lwIP stack lock */
       cyw43_arch_lwip_end();

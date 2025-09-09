@@ -27,9 +27,10 @@
 #define MQTT_SERVER           "10.42.0.1" // RPi5 wifi hotspot
 // No DNS stuff, go easy with IP addr: 10.43.0.117 = 0A.2B.00.75
 // If go on Noser guestWan:   IP addr: 10.43.18.0  = 0A.2B.12.00
-//#define MQTT_SERVER_HEXA      ((u32_t)0x0A2B0075UL)
-#define MQTT_SERVER_HEXA      ((u32_t)0x0A2B1200UL)
-#define MQTT_SERVER_PORT      1883  /* Often this port */
+// If go on Noser guestWan:   IP addr: 10.42.0.1   = 0A.2A.00.01
+#define MQTT_SERVER_HEXA      ((u32_t)0xA2A0001UL)
+// #define MQTT_SERVER_HEXA      ((u32_t)0x0A2B1200UL)
+#define MQTT_SERVER_PORT      1883
 #define MQTT_TOPIC_LEN        100
 #define MQTT_KEEP_ALIVE_S     60    /* Seconds */
 // qos passed to mqtt_subscribe
@@ -73,8 +74,10 @@
  * $~: mosquitto_sub -d -t rpi5_topic_2 -u RPI5_JEREM -P m05qu1770 -h 10.42.0.1
  */
 //#define WIFI_SSID             "NoserWlanPortal" /* For Noser only */
-#define WIFI_SSID             "IoT_HS" /* For Noser only */
-#define WIFI_PASSWORD         "107_H5_4242" /* No password on GuestWLAN */
+//#define WIFI_SSID             "IoT_HS" /* For Noser only */
+#define WIFI_SSID             "rpi5_hotspot" /* For Noser only */
+//#define WIFI_PASSWORD         "107_H5_4242" /* No password on GuestWLAN */
+#define WIFI_PASSWORD         "rp15_h075p07" /* No password on GuestWLAN */
 #define WIFI_CONN_TIMEOUT     30000 /* in millisec */
 
 /* Asynchrone worker timeout.

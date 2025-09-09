@@ -45,16 +45,20 @@ void task_thread_mqtt(void *params)
 
    /* Enable W-Fi on pico2_w */
    cyw43_arch_enable_sta_mode();
-   printf("[INFO] WiFi enabled\n");
 
    /* Connect to specific Wi-Fi */
-   if (cyw43_arch_wifi_connect_timeout_ms(WIFI_SSID, WIFI_PASSWORD, CYW43_AUTH_WPA2_AES_PSK, WIFI_CONN_TIMEOUT))
+   int connErr = cyw43_arch_wifi_connect_timeout_ms(WIFI_SSID, WIFI_PASSWORD, CYW43_AUTH_WPA_TKIP_PSK, WIFI_CONN_TIMEOUT);
+   if (0 != connErr)
    {
-      printf("[ERR] Failed to connect to WiFi");
+      printf("[ERR] Failed to connect to WiFi - err %d\n", connErr);
       cyw43_arch_deinit();
       vTaskDelete(NULL);
+      return;
    }
-   printf("[INFO] Connected to Wifi\n");
+   else
+   {
+      printf("[INFO] Connected to Wifi - ip addr: %s\n", ipaddr_ntoa(&(netif_list->ip_addr)));
+   }
 
    MQTT_CLIENT_DATA_T* mqttHandle = (MQTT_CLIENT_DATA_T*)(params);
 
@@ -80,7 +84,6 @@ void task_thread_mqtt(void *params)
       {
          printf("Disconnected from MQTT broker\n");
       }
-      printf("Hello from main task\n");
       // Publish value of ADC
       publish_adc(mqttHandle);
       vTaskDelay(3000);

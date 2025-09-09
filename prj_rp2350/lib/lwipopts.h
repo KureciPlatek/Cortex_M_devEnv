@@ -22,17 +22,18 @@
 #define LWIP_POSIX_SOCKETS_IO_NAMES       0     /* Causes conflicts with normal file operations */
 #define LWIP_TCP_CLOSE_TIMEOUT_MS_DEFAULT 2000  /* Speed up socket close (alternative to enabling SO_LINGER) - default is 20 secs */
 
-#define TCPIP_MBOX_SIZE                   16
+#define TCPIP_MBOX_SIZE                   32
+#define MEMP_NUM_SYS_TIMEOUT              10
 
 #define TCPIP_THREAD_PRIO                 2
 #define TCPIP_THREAD_STACKSIZE            2048 //1024
 #define DEFAULT_THREAD_STACKSIZE          1024
-#define DEFAULT_RAW_RECVMBOX_SIZE         16
+#define DEFAULT_RAW_RECVMBOX_SIZE         32
 
 /* Others */
 #define MEM_LIBC_MALLOC             0
 #define MEM_ALIGNMENT               4
-#define MEM_SIZE                    4000
+#define MEM_SIZE                    (24 * 1024)
 #define MEMP_NUM_TCP_SEG            32
 #define MEMP_NUM_ARP_QUEUE          10
 #define PBUF_POOL_SIZE              24
@@ -65,11 +66,12 @@
 #define LWIP_DHCP_DOES_ACD_CHECK    0
 
 #ifndef NDEBUG
-#define LWIP_DEBUG                  1
-#define LWIP_STATS                  1
-#define LWIP_STATS_DISPLAY          1
+#define LWIP_DEBUG                  0
+#define LWIP_STATS                  0
+#define LWIP_STATS_DISPLAY          0
 #endif
 
+#define MQTT_DEBUG                  LWIP_DBG_OFF
 #define ETHARP_DEBUG                LWIP_DBG_OFF
 #define NETIF_DEBUG                 LWIP_DBG_OFF
 #define PBUF_DEBUG                  LWIP_DBG_OFF

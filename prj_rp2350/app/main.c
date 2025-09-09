@@ -24,7 +24,7 @@ int main(void)
    adc_init();
    adc_set_temp_sensor_enabled(true);
    adc_select_input(4);
-   printf("Start program\n");
+   printf("\n --- Start program ---\n");
 
    /* Get pico board unique ID and create a client name out of it*/
 //   char unique_id_buf[5];
@@ -75,24 +75,18 @@ int main(void)
 //#endif
 #endif
 
-   // We are not in a callback so locking is needed when calling lwip
-   // Make a DNS request for the MQTT server IP address
-//   cyw43_arch_lwip_begin();
-//   int err = dns_gethostbyname(MQTT_SERVER, &mqttComm_handle.mqtt_server_address, dns_found, &mqttComm_handle);
-//   cyw43_arch_lwip_end();
+   /* Provide IP address to MQTT client */
    ip_addr_t mqttBrokerIP;
-   mqttBrokerIP.addr = MQTT_SERVER_HEXA;
+   if (!ipaddr_aton(MQTT_SERVER, &mqttBrokerIP))
+   {
+      printf("Invalid MQTT server address: %s\n", MQTT_SERVER);
+      return false;
+   }
    mqttComm_handle.mqtt_server_address = mqttBrokerIP;
 
    /* Start RTOS */
-   printf("Init FreeRTOS\n");
    freeRtos_init(&mqttComm_handle);
 
-//   while (!mqttComm_handle.connect_done || mqtt_client_is_connected(mqttComm_handle.mqtt_client_inst))
-//   {
-//      cyw43_arch_poll();
-//      cyw43_arch_wait_for_work_until(make_timeout_time_ms(10000));
-//   }
    while(true) {}
 
    printf("mqtt client exiting\n");
