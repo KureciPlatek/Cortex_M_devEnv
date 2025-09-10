@@ -648,3 +648,10 @@ So I gave up
 >
 >Also with WSL, you have to do some trick to forward USB ports to this semi-OS, so that you can flash and debug your program on target with gdb (I had to use usbipd to forward STLinkDebugger to WSL env)
 
+Windows only brings problems. It is always a strange state regarding terminals, it is never clear how it will react, as sometimes it configures itself to be UNIX like, sometimes half, sometimes not. Git reacts differently.
+
+Those backslashes are nothing else but a pain in the ass
+
+It is still crazy to have an space in name `Program Files`.
+
+And those CRLF in files are just horrible. I mean, why?? I don't know how many times, with the flourishing of "smart" programs and IDE, it configures it back to CRLF, I didn't went to control it at each commit (please don't tell me I have to do that) and tadaaaa `^M` chars everywhere! Big Red Commit!

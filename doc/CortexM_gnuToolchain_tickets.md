@@ -38,15 +38,15 @@ Is to show that IDE just do some steps to combine different mandatory elements (
 | DOC_2 | ==ARM-Cortex== Explain and demystify CMSIS and other CMSIS (like DSP) files                                                                                                                                 | NEW   |
 | DOC_3 | ==Debug== Explain/demystify/depict the different debug interfaces, _DAP_, _TAP_, _JTAG_, _SWD_ etc..., their role, their physical interfaces, connectors (_SWD + UART_, 20 pins connectors etc..) and so on | NEW   |
 | DOC_4 | ==Linker== Understand linke files and how they work together with reset_handlers and startup.s files                                                                                                        | NEW   |
-| SYS_2 | ==CMake== Restructure all CMake files for them to be better structured and more clean<br>- Improvement: use target_sources() to avoid specifing those at add_executable() cmd                               | NEW   |
+| DOC_5 | ==Windows Complains== Gather all Windows complain in a Markdown file                                                                                                                                        | NEW   |
 
 
 **Work In Progress issues:**  
 
-| Issue | Description                                                                            | state |
-| ----- | -------------------------------------------------------------------------------------- | ----- |
-| DOC_1 | ==Blog== Create all documentation and explain the full work and process on each DevEnv | WIP   |
-|       |                                                                                        |       |
+| Issue | Description                                                                                                                                                                   | state |
+| ----- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----- |
+| DOC_1 | ==Blog== Create all documentation and explain the full work and process on each DevEnv                                                                                        | WIP   |
+| SYS_2 | ==CMake== Restructure all CMake files for them to be better structured and more clean<br>- Improvement: use target_sources() to avoid specifing those at add_executable() cmd | WIP   |
 
 
 **Resolved issues:**
@@ -79,19 +79,21 @@ Is to show that IDE just do some steps to combine different mandatory elements (
 
 **Work In Progress issues:**  
 
-| Issue  | Description                                                                                                         | state                                                                          |
-| ------ | ------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
-| SFW_9  | ==DevEnv6== STM32H7, ThreadX (Eclipseless), BlackMagic debug probe, STMCubeless (keep only required specific files) | WIP - #64e11c9<br>Still have to do JLink and BlackMagic                        |
-| SFW_4  | ==DevEnv7== RP2350, ThreadX (Eclipseless), Raspberry Debug Probe                                                    | WIP - #1b0f7a7<br>Has a core HardFault IRQ when executing scheduler            |
-| SFW_11 | ==DevEnv8== RP2350, FreeRTOS, Raspberry Debug Probe, MQTT                                                           | WIP - #f267a82<br>Use FreeRTOS as async env and wip on good startup/cyw43 init |
+| Issue | Description                                                                                                         | state                                                               |
+| ----- | ------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------- |
+| SFW_9 | ==DevEnv6== STM32H7, ThreadX (Eclipseless), BlackMagic debug probe, STMCubeless (keep only required specific files) | WIP - #64e11c9<br>Still have to do JLink and BlackMagic             |
+| SFW_4 | ==DevEnv7== RP2350, ThreadX (Eclipseless), Raspberry Debug Probe                                                    | WIP - #1b0f7a7<br>Has a core HardFault IRQ when executing scheduler |
+|       |                                                                                                                     |                                                                     |
+
 
 
 **Resolved issues:**
 
-| Issue | Description                                                                                                                                           | state           |
-| ----- | ----------------------------------------------------------------------------------------------------------------------------------------------------- | --------------- |
-| SFW_8 | ==DevEnv5== STM32F4, ThreadX (Eclipseless, from official Github repo direct), BlackMagic debug probe, STMCubeless (keep only required specific files) | DONE - #d1bf642 |
-|       |                                                                                                                                                       |                 |
+| Issue  | Description                                                                                                                                           | state                                                         |
+| ------ | ----------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------- |
+| SFW_8  | ==DevEnv5== STM32F4, ThreadX (Eclipseless, from official Github repo direct), BlackMagic debug probe, STMCubeless (keep only required specific files) | DONE - #d                                                     |
+| SFW_11 | ==DevEnv8== RP2350, FreeRTOS, Raspberry Debug Probe, MQTT                                                                                      DONE - #86f3157<br>Warning about memory required for lwIP  ed  ed  ed  |
+|        |                                                                                                                                                                                                                       |
 
 
 **Rejected issues**
