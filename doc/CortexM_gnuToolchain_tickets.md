@@ -43,10 +43,10 @@ Is to show that IDE just do some steps to combine different mandatory elements (
 
 **Work In Progress issues:**  
 
-| Issue | Description                                                                                                                                                                   | state                                      |
-| ----- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------ |
-| DOC_1 | ==Blog== Create all documentation and explain the full work and process on each DevEnv                                                                                        | WIP                                        |
-| SYS_2 | ==CMake== Restructure all CMake files for them to be better structured and more clean<br>- Improvement: use target_sources() to avoid specifing those at add_executable() cmd | WIP #0da6c91<br>Still have to clean it all |
+| Issue | Description                                                                                                                                                                   | state |
+| ----- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----- |
+| DOC_1 | ==Blog== Create all documentation and explain the full work and process on each DevEnv                                                                                        | WIP   |
+| SYS_2 | ==CMake== Restructure all CMake files for them to be better structured and more clean<br>- Improvement: use target_sources() to avoid specifing those at add_executable() cmd | WIP   |
 
 
 **Resolved issues:**
@@ -79,11 +79,12 @@ Is to show that IDE just do some steps to combine different mandatory elements (
 
 **Work In Progress issues:**  
 
-| Issue  | Description                                                                                                         | state                                                                          |
-| ------ | ------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
-| SFW_9  | ==DevEnv6== STM32H7, ThreadX (Eclipseless), BlackMagic debug probe, STMCubeless (keep only required specific files) | WIP - #64e11c9<br>Still have to do JLink and BlackMagic                        |
-| SFW_4  | ==DevEnv7== RP2350, ThreadX (Eclipseless), Raspberry Debug Probe                                                    | WIP - #1b0f7a7<br>Has a core HardFault IRQ when executing scheduler            |
-| SFW_11 | ==DevEnv8== RP2350, FreeRTOS, Raspberry Debug Probe, MQTT                                                           | WIP - #f267a82<br>Use FreeRTOS as async env and wip on good startup/cyw43 init |
+| Issue | Description                                                                                                         | state                                                               |
+| ----- | ------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------- |
+| SFW_9 | ==DevEnv6== STM32H7, ThreadX (Eclipseless), BlackMagic debug probe, STMCubeless (keep only required specific files) | WIP - #64e11c9<br>Still have to do JLink and BlackMagic             |
+| SFW_4 | ==DevEnv7== RP2350, ThreadX (Eclipseless), Raspberry Debug Probe                                                    | WIP - #1b0f7a7<br>Has a core HardFault IRQ when executing scheduler |
+|       |                                                                                                                     |                                                                     |
+
 
 
 
