@@ -1,28 +1,16 @@
 cmake_minimum_required(VERSION 3.20)
-# Some options to provide to pico-sdk cmake files:
-# cmake -DCMAKE_BUILD_TYPE=Debug -DPICO_DEOPTIMIZED_DEBUG=1 ..
-set (CMAKE_BUILD_TYPE Debug)
-set (PICO_DEOPTIMIZED_DEBUG 1)
-# to avoid any optimistion
+message("Project RP2350")
 
-# Be sure to have configured your PATHs drivers and external libraries in the following file:
-include(${CMAKE_SOURCE_DIR}/cortex_m_env.cmake)
-
-# @todo To move to .cmake
-set (MCPU_CORTEX_M0        "cortex-m 0")
-set (MCPU_CORTEX_M0_PATH   corte_m0)
-set (MCPU_CORTEX_M33       "cortex-m33")
-set (MCPU_CORTEX_M33_PATH  cortex_m33)
+# Be sure to have configured your PATHs for STM32 HAL/LL drivers and ThreadX in the following file:
+include(${CMAKE_SOURCE_DIR}/cortex_m_toolchain.cmake)
 
 # --- Select desired project amongst those supported
 set (MCU_FAMILY_UPPERCASE ${UPPERCASE_MCU_FAMILY_RP})
 set (MCU_FAMILY_LOWERCASE ${LOWERCASE_MCU_FAMILY_RP})
 
-# --- External modules and sources
-message("Project RP2350")
-# --- Configure pico-sdk
-set(PICO_BOARD pico2_w)
-set(picotool_DIR /opt/picotool) # picotool arbitrarily set there by me
+# --- Pico SDK configuration
+set(PICO_BOARD pico2_w)          # Set pico-sdk's PICO_BOARD to pico2_w (RP2350 W). Other values are pico, pico_w and pico2
+set(picotool_DIR /opt/picotool)  # Set picotool path (picotool was placed in /opt/ arbitrarily. Could be placed anywhere)
 set(PICO_SDK_PATH ${CMAKE_SOURCE_DIR}/../../pico-sdk)
 include(${CMAKE_SOURCE_DIR}/pico_sdk_import.cmake)
 
@@ -30,8 +18,9 @@ include(${CMAKE_SOURCE_DIR}/pico_sdk_import.cmake)
 set (MCPU         ${MCPU_CORTEX_M33})  # depends on target and required compiling options
 set (MCPU_PATH    ${MCPU_CORTEX_M33_PATH})  # depends on target and required compiling options
 
-# --- FreeRTOS path
-set (FREERSTOS_KERNEL_PATH ${CMAKE_SOURCE_DIR}/../../FreeRTOS-Kernel)
+# --- Selection of RTOS
+set (RTOS_THREADX 1)   # Selection of RTOS, choose between RTOS_THREADX and RTOS_FREERTOS
+include(${CMAKE_SOURCE_DIR}/cortex_m_rtos.cmake)
 
 # --- Project name and declaration
 set (CMAKE_PROJECT_NAME prj_${MCU_FAMILY_LOWERCASE})
@@ -54,12 +43,16 @@ set(INCLUDE_DIR
 )
 
 # --- Sources
+# Improvement: use target_sources() to avoid specifing those at add_executable() cmd
 set (PROJECT_SOURCES ${CMAKE_SOURCE_DIR}/app/main.c
                      ${CMAKE_SOURCE_DIR}/app/app_freeRtos.c
                      ${CMAKE_SOURCE_DIR}/lib/mqtt_pico2w.c
                      ${CMAKE_SOURCE_DIR}/lib/drv_gyroscope.c
                      ${FREERSTOS_KERNEL_PATH}/portable/MemMang/heap_4.c # FreeRTOS stack/mem management style
 )
+
+# --- Linker
+# Not required as already handled by PICO-SDK
 
 # --- Project preprocessors
 add_compile_definitions(
@@ -71,7 +64,13 @@ add_compile_definitions(
 )
 
 # --- Project compilation flags/parameters
-add_compile_options(-Wall)
+# Not required as already handled by PICO-SDK
+
+# --- Project assembler flags/parameters
+# Not required as already handled by PICO-SDK
+
+# --- Project link flags/parameters
+# Not required as already handled by PICO-SDK
 
 # --- Create project's Makefile
 add_executable(${CMAKE_PROJECT_NAME} ${PROJECT_SOURCES})
