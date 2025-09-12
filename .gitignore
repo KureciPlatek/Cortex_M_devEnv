@@ -1,2 +1,11 @@
+<<<<<<< HEAD
 doc/.obsidian/*
 doc\.obsidian\*
+=======
+.obsidian/
+.obsidian\
+bin/
+bin\
+build/
+build\
+>>>>>>> master

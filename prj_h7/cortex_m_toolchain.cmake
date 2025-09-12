@@ -4,10 +4,22 @@ set(CMAKE_SYSTEM_NAME Generic)
 set(CMAKE_SYSTEM_PROCESSOR arm)
 
 # Variables to sort out which STM32 family we are compiling for
-set (UPPERCASE_MCU_FAMILY_H7 H7)
-set (LOWERCASE_MCU_FAMILY_H7 h7)
-set (UPPERCASE_MCU_FAMILY_N6 N6)
-set (LOWERCASE_MCU_FAMILY_N6 n6)
+set (UPPERCASE_MCU_FAMILY_H7 H7) # STMicroelectronics STM32H7xx
+set (LOWERCASE_MCU_FAMILY_H7 h7) # STMicroelectronics STM32H7xx
+set (UPPERCASE_MCU_FAMILY_N6 N6) # STMicroelectronics STM32N6xx
+set (LOWERCASE_MCU_FAMILY_N6 n6) # STMicroelectronics STM32N6xx
+set (UPPERCASE_MCU_FAMILY_RP RP) # Raspberry RP2040 / RP2350
+set (LOWERCASE_MCU_FAMILY_RP rp) # Raspberry RP2040 / RP2350
+
+# Variables to sort Cortex-M architecture family
+set (MCPU_CORTEX_M55       "cortex-m55")
+set (MCPU_CORTEX_M55_PATH  cortex_m55)
+set (MCPU_CORTEX_M7        "cortex-m7")
+set (MCPU_CORTEX_M7_PATH   cortex_m7)
+set (MCPU_CORTEX_M0        "cortex-m 0")
+set (MCPU_CORTEX_M0_PATH   corte_m0)
+set (MCPU_CORTEX_M33       "cortex-m33")
+set (MCPU_CORTEX_M33_PATH  cortex_m33)
 
 # Some GNU-ARM compiler options
 set (MFLOAT_ABI_SOFT       "soft")
@@ -30,7 +42,7 @@ if(CMAKE_HOST_SYSTEM_NAME STREQUAL "Windows")
    message(STATUS " --- WINDOWS ---")
    # Sadly $ENV{HOMEPATH} returns path with backslashes, which is not supported by CMake (\U not known).
    # So I have to put my own absolute path. Please modify it for yours
-   set (PRJ_EXTSRC_PATH  ${CMAKE_SOURCE_DIR}/../..)
+   set (PRJ_EXTSRC_PATH C:/Users/jeremie.gallee/Documents/Project_CortexM_blog)
 endif()
 if(CMAKE_HOST_SYSTEM_NAME STREQUAL "Darwin")
    message(FATAL_ERROR "macOS Not supported yet")
