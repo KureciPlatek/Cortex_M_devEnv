@@ -43,10 +43,10 @@ Is to show that IDE just do some steps to combine different mandatory elements (
 
 **Work In Progress issues:**  
 
-| Issue | Description                                                                                                                                                                   | state |
-| ----- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----- |
-| DOC_1 | ==Blog== Create all documentation and explain the full work and process on each DevEnv                                                                                        | WIP   |
-| SYS_2 | ==CMake== Restructure all CMake files for them to be better structured and more clean<br>- Improvement: use target_sources() to avoid specifing those at add_executable() cmd | WIP   |
+| Issue | Description                                                                                                                                                                   | state                                      |
+| ----- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------ |
+| DOC_1 | ==Blog== Create all documentation and explain the full work and process on each DevEnv                                                                                        | WIP                                        |
+| SYS_2 | ==CMake== Restructure all CMake files for them to be better structured and more clean<br>- Improvement: use target_sources() to avoid specifing those at add_executable() cmd | WIP #0da6c91<br>Still have to clean it all |
 
 
 **Resolved issues:**
