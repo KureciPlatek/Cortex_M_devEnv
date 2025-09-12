@@ -57,6 +57,7 @@ set(INCLUDE_DIR
 set (PROJECT_SOURCES ${CMAKE_SOURCE_DIR}/app/main.c
                      ${CMAKE_SOURCE_DIR}/app/app_freeRtos.c
                      ${CMAKE_SOURCE_DIR}/lib/mqtt_pico2w.c
+                     ${CMAKE_SOURCE_DIR}/lib/drv_gyroscope.c
                      ${FREERSTOS_KERNEL_PATH}/portable/MemMang/heap_4.c # FreeRTOS stack/mem management style
 )
 
@@ -85,14 +86,11 @@ target_include_directories(${CMAKE_PROJECT_NAME} PUBLIC ${INCLUDE_DIR})
 # Add pico-sdk libraries
 target_link_libraries(${CMAKE_PROJECT_NAME}
    pico_stdlib
-#   pico_cyw43_arch_none # LED accessible on PICO 2 W only through CYW43 Bluetooth+Wifi chip
    hardware_adc
    # pico-sdk's CYW43 drivers and async context. Select between threadSafe and FreeRTOS
-#   pico_cyw43_arch_lwip_threadsafe_background
    pico_cyw43_arch_lwip_sys_freertos
    pico_async_context_freertos
    # pico-sdk's FreeRTOS
-#   FreeRTOS-Kernel
    FreeRTOS-Kernel-Heap4 # Could be -Static or any other heap implementation proposed by FreeRTOS
    # lwIP MQTT lib
    pico_lwip_mqtt

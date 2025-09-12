@@ -20,4 +20,8 @@
 #include "app_freeRtos.h"
 #include "hardware/adc.h"
 
+#define ADC_PIN_XAXIS   26
+#define ADC_PIN_YAXIS   27
+#define ADC_PIN_ITEMP   4   /* Internal temperature sensor ADC */
+
 #endif /* BOARD_H */

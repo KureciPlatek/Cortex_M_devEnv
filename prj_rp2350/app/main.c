@@ -11,8 +11,7 @@
  */
 
 #include "board.h"
- #include "mqtt_pico2w.h"
-// #include "pico/unique_id.h"   /* For pico_get_unique_board_id_string */
+#include "mqtt_pico2w.h"
 #include "pico/multicore.h"
 
 static MQTT_CLIENT_DATA_T mqttComm_handle;
@@ -21,24 +20,15 @@ int main(void)
 {
    stdio_init_all();
 
+   /* GPIO 26, 27 and 28 as ADC0, 1 and 2
+    * Use pin 33 as AGND and pin 35 as ADC_VREF (set 3V3(out) to it )*/
    adc_init();
-   adc_set_temp_sensor_enabled(true);
-   adc_select_input(4);
-   printf("\n --- Start program ---\n");
 
-   /* Get pico board unique ID and create a client name out of it*/
-//   char unique_id_buf[5];
-//   pico_get_unique_board_id_string(unique_id_buf, sizeof(unique_id_buf));
-//   for (int i = 0; i < sizeof(unique_id_buf) - 1; i++)
-//   {
-//      unique_id_buf[i] = tolower(unique_id_buf[i]);
-//   }
-//
-//   char client_id_buf[sizeof(MQTT_DEVICE_NAME) + sizeof(unique_id_buf) - 1];
-//   memcpy(&client_id_buf[0], MQTT_DEVICE_NAME, sizeof(MQTT_DEVICE_NAME) - 1);
-//   memcpy(&client_id_buf[sizeof(MQTT_DEVICE_NAME) - 1], unique_id_buf, sizeof(unique_id_buf) - 1);
-//   client_id_buf[sizeof(client_id_buf) - 1] = 0;
-//   printf("Device name %s\n", client_id_buf);
+   adc_gpio_init(ADC_PIN_XAXIS);
+   adc_gpio_init(ADC_PIN_YAXIS);
+
+   adc_set_temp_sensor_enabled(true);
+   printf("\n --- Start program ---\n");
 
    /* Prepare MQTT client connection */
    mqttComm_handle.mqtt_client_info.client_id    = MQTT_DEVICE_NAME;  // client_id_buf;
@@ -50,8 +40,6 @@ int main(void)
 #error "No password and name provided for MQTT"
 #endif
 
-//   static char will_topic[MQTT_TOPIC_LEN];
-//   strncpy(will_topic, full_topic(&mqttComm_handle, MQTT_WILL_TOPIC), sizeof(will_topic));
    mqttComm_handle.mqtt_client_info.will_topic   = MQTT_WILL_TOPIC; // will_topic;
    mqttComm_handle.mqtt_client_info.will_msg     = MQTT_WILL_MSG;
    mqttComm_handle.mqtt_client_info.will_qos     = MQTT_WILL_QOS;
