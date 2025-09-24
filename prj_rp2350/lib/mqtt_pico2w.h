@@ -21,7 +21,6 @@
 #include "lwip/apps/mqtt.h"
 #include "lwip/apps/mqtt_priv.h"
 #include "lwip/dns.h"
-#include "board.h"
 #if LWIP_ALTCP && LWIP_ALTCP_TLS
 #include "lwip/altcp_tls.h"
 #endif
@@ -47,8 +46,8 @@
 #define MQTT_LED_CMD_ON       "On"
 #define MQTT_LED_CMD_OFF      "Off"
 #define MQTT_PRINT_TOPIC      "/print"
-#define MQTT_PRINT_UNSUBLED   "unsub_led"
-#define MQTT_PRINT_SUB_LED    "sub_led"
+#define MQTT_PRINT_LED_UNSUB  "unsub_led"
+#define MQTT_PRINT_LED_SUB    "sub_led"
 
 /* @todo move to CMake or compile time */
 #define MQTT_USERNAME         "RPI5_JEREM"

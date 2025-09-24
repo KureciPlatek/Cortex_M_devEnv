@@ -10,6 +10,8 @@
  * 
  */
 
+#include "drv_gyroscope.h"
+
 /**
  * @brief   Measure values of ADC to send random data to MQTT broker
  * @param   none

@@ -18,6 +18,7 @@
 #include "FreeRTOS.h"
 #include "mqtt_pico2w.h"
 #include "app_freeRtos.h"
+#include "drv_gyroscope.h"
 #include "hardware/adc.h"
 
 #define ADC_PIN_XAXIS   26

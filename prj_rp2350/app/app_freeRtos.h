@@ -13,9 +13,9 @@
 #ifndef APP_FREERTOS_H
 #define APP_FREERTOS_H
 
-#include "board.h"
 #include "pico/cyw43_arch.h"
 #include "task.h" /* FreeRTOS */
+#include "mqtt_pico2w.h"
 
 /* Define priorities of tasks */
 #define TASK_ONE_PRIORITY  (tskIDLE_PRIORITY + 1UL)

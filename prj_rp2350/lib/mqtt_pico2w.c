@@ -11,6 +11,7 @@
  */
 
 #include "mqtt_pico2w.h"
+#include "board.h"
 
 /* --- Publish to topic --- */
 static void pub_request_cb(__unused void *arg, err_t err);
@@ -73,7 +74,7 @@ void publish_gyro(MQTT_CLIENT_DATA_T *mqtt_handle, float angSpeed_X, float angSp
    }
    else
    {
-      printf("[INFO] Published: %s to %s\n", temperature_str, MQTT_WILL_TOPIC);
+      printf("[INFO] Published: %s to %s\n", XY_values_string, MQTT_WILL_TOPIC);
    }
 }
 
@@ -85,9 +86,10 @@ void publish_gyro(MQTT_CLIENT_DATA_T *mqtt_handle, float angSpeed_X, float angSp
  */
 static void pub_request_cb(__unused void *arg, err_t err)
 {
+   MQTT_CLIENT_DATA_T *mqtt_handle = (MQTT_CLIENT_DATA_T *)arg;
    if (err != 0)
    {
-      printf("[ERR]  pub_request_cb failed %d", err);
+      printf("[ERR]  pub_request_cb failed %d, %s\n", err, mqtt_handle->topic);
    }
 }
 
@@ -103,7 +105,7 @@ static void sub_request_cb(void *arg, err_t err)
    MQTT_CLIENT_DATA_T *mqtt_handle = (MQTT_CLIENT_DATA_T *)arg;
    if (err != 0)
    {
-      printf("[ERR]  subscribe request failed %d", err);
+      printf("[ERR]  subscribe request failed %d, %s\n", err, mqtt_handle->topic);
    }
 }
 
@@ -119,7 +121,7 @@ static void unsub_request_cb(void *arg, err_t err)
    MQTT_CLIENT_DATA_T *mqtt_handle = (MQTT_CLIENT_DATA_T *)arg;
    if (err != 0)
    {
-      printf("[ERR]  unsubscribe request failed %d", err);
+      printf("[ERR]  unsubscribe request failed %d, %s\n", err, mqtt_handle->topic);
    }
 }
 
@@ -144,7 +146,7 @@ static void mqtt_incoming_data_cb(void *arg, const u8_t *data, u16_t len, u8_t f
    printf("[INFO] Topic: %s, Message: %s\n", mqtt_handle->topic, mqtt_handle->data);
 
    /* Control LED */
-   if (strcmp(mqtt_handle->topic, MQTT_TOPIC_LED) == 0)
+   if (strcmp(mqtt_handle->topic, MQTT_LED_TOPIC) == 0)
    {
       if (lwip_stricmp((const char *)mqtt_handle->data, MQTT_LED_CMD_ON) == 0)
       {
@@ -156,21 +158,23 @@ static void mqtt_incoming_data_cb(void *arg, const u8_t *data, u16_t len, u8_t f
       }
    }
    /* Print a message and/or subscribe/unsubscribe to topic */
-   else if (strcmp(mqtt_handle->topic, MQTT_TOPIC_PRINT) == 0)
+   else if (strcmp(mqtt_handle->topic, MQTT_PRINT_TOPIC) == 0)
    {
       /* Print message */
-      printf("%.*s\n", len, mqtt_handle->data);
+      printf("[INFO] received %.*s\n", len, mqtt_handle->data);
 
       /* Look if subscribe or unsubscribe to LED ordered */
-      if(strcmp(mqtt_handle->data, MQTT_UNSUB_LED))
+      if(strcmp(mqtt_handle->data, MQTT_PRINT_LED_UNSUB))
       {
          /* Unsubscribe */
-         mqtt_sub_unsub(mqtt_handle->mqtt_client_inst, MQTT_TOPIC_LED, MQTT_SUBSCRIBE_QOS, (mqtt_request_cb_t)unsub_request_cb, mqtt_handle, (u8_t)0);
+         printf("[INFO] Unsub to LED\n");
+         mqtt_sub_unsub(mqtt_handle->mqtt_client_inst, MQTT_LED_TOPIC, MQTT_SUBSCRIBE_QOS, (mqtt_request_cb_t)unsub_request_cb, mqtt_handle, (u8_t)0);
       }
-      else if(strcmp(mqtt_handle->data, MQTT_SUB_LED))
+      else if(strcmp(mqtt_handle->data, MQTT_PRINT_LED_SUB))
       {
          /* Subscribe */
-         mqtt_sub_unsub(mqtt_handle->mqtt_client_inst, MQTT_TOPIC_LED, MQTT_SUBSCRIBE_QOS, (mqtt_request_cb_t)sub_request_cb, mqtt_handle, (u8_t)1);
+         printf("[INFO] Sub to LED\n");
+         mqtt_sub_unsub(mqtt_handle->mqtt_client_inst, MQTT_LED_TOPIC, MQTT_SUBSCRIBE_QOS, (mqtt_request_cb_t)sub_request_cb, mqtt_handle, (u8_t)1);
       }
    }
 }
@@ -204,7 +208,18 @@ static void mqtt_connection_cb(mqtt_client_t *client, void *arg, mqtt_connection
       mqtt_handle->connect_done = true;
       mqtt_handle->mqtt_client_inst = client;
       /* Subscribe to LED topic */
-      err_t err = mqtt_sub_unsub(mqtt_handle->mqtt_client_inst, MQTT_TOPIC_LED, MQTT_SUBSCRIBE_QOS, (mqtt_request_cb_t)sub_request_cb, mqtt_handle, (u8_t)1);
+      err_t err = mqtt_sub_unsub(mqtt_handle->mqtt_client_inst, MQTT_LED_TOPIC, MQTT_SUBSCRIBE_QOS, (mqtt_request_cb_t)sub_request_cb, mqtt_handle, (u8_t)1);
+      if(ERR_OK != err)
+      {
+         printf("[ERR]  Error while subscribe to %s: %d\n", MQTT_LED_TOPIC, err);
+      }
+
+//      /* Subscribe to MQTT_PRINT_TOPIC topic */
+//      err = mqtt_sub_unsub(mqtt_handle->mqtt_client_inst, MQTT_PRINT_TOPIC, MQTT_SUBSCRIBE_QOS, (mqtt_request_cb_t)sub_request_cb, mqtt_handle, (u8_t)1);
+//      if(ERR_OK != err)
+//      {
+//         printf("[ERR]  Error while subscribe to %s: %d\n", MQTT_PRINT_TOPIC, err);
+//      }
 
       // indicate online
       if (mqtt_handle->mqtt_client_info.will_topic)
@@ -218,7 +233,7 @@ static void mqtt_connection_cb(mqtt_client_t *client, void *arg, mqtt_connection
    }
    else
    {
-      printf("[ERR]  Unexpected status");
+      printf("[ERR]  Unexpected status\n");
    }
 }
 
