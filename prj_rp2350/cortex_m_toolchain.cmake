@@ -2,8 +2,7 @@
 set(CMAKE_SYSTEM_NAME Generic)
 set(CMAKE_SYSTEM_PROCESSOR arm)
 
-# Variables to sort out which microcontroller family we are compiling for
-# It will help for path and 
+# Variables to sort out which microcontroller family we are compiling for. It will help for path
 set (UPPERCASE_MCU_FAMILY_H7 H7) # STMicroelectronics STM32H7xx
 set (LOWERCASE_MCU_FAMILY_H7 h7) # STMicroelectronics STM32H7xx
 set (UPPERCASE_MCU_FAMILY_N6 N6) # STMicroelectronics STM32N6xx
@@ -11,12 +10,27 @@ set (LOWERCASE_MCU_FAMILY_N6 n6) # STMicroelectronics STM32N6xx
 set (UPPERCASE_MCU_FAMILY_RP RP) # Raspberry RP2040 / RP2350
 set (LOWERCASE_MCU_FAMILY_RP rp) # Raspberry RP2040 / RP2350
 
+# Variables to sort Cortex-M architecture family
+set (MCPU_CORTEX_M55       "cortex-m55")
+set (MCPU_CORTEX_M55_PATH  cortex_m55)
+set (MCPU_CORTEX_M7        "cortex-m7")
+set (MCPU_CORTEX_M7_PATH   cortex_m7)
+set (MCPU_CORTEX_M0        "cortex-m 0")
+set (MCPU_CORTEX_M0_PATH   corte_m0)
+set (MCPU_CORTEX_M33       "cortex-m33")
+set (MCPU_CORTEX_M33_PATH  cortex_m33)
+
+# COmpiling options for Cortex-M architecture (if the architecture supports it)
+set (MFLOAT_ABI_SOFT       "soft")
+set (MFLOAT_ABI_HARD       "hard")
+set (MFLOAT_ABI_MIX        "softfp")
+set (MFPU_FPV4_SP_D16      "fpv4-sp-d16")
+set (MFPU_FPV5_D16         "fpv5-d16")
+set (RUNTIME_LIB_SYSMEM    "nano.specs")
+set (RUNTIME_LIB_SYSCALLS  "nosys.specs")
+# set (SECURE_CODE           "-mcmse")   # for Cortex-M with TrustZone only (M7, M55 and M33)
+
 # Set path to folder with all required libraries and external sources. 
-# I tend to keep all projects with their lib and external sources near to each other but it is purely
-# an opinion and scatter those sources across your PC is also a good option.
-# The idea here is to tell to CMake the most common folder for all external source, then
-# in more specific_target_lib_and_sources.cmake files, define the clear path to them
-# How I organized it could DEFINITELY be modified
 message("Running on ${CMAKE_HOST_SYSTEM_NAME}")
 if(CMAKE_HOST_SYSTEM_NAME STREQUAL "Linux")
    message(" --- LINUX ---")
@@ -26,7 +40,7 @@ if(CMAKE_HOST_SYSTEM_NAME STREQUAL "Windows")
    message(" --- WINDOWS ---")
    # Sadly $ENV{HOMEPATH} returns path with backslashes, which is not supported by CMake (\U not known).
    # So I have to put my own absolute path. Please modify it for yours
-   set (PRJ_EXTSRC_PATH </path/to/your/project/>)
+   set (PRJ_EXTSRC_PATH C:/Users/jeremie.gallee/Documents/Project_CortexM_blog)
 endif()
 if(CMAKE_HOST_SYSTEM_NAME STREQUAL "Darwin")
    message(FATAL_ERROR "macOS Not supported yet")
@@ -42,7 +56,7 @@ set(CMAKE_OBJCOPY       arm-none-eabi-objcopy)
 set(CMAKE_SIZE          arm-none-eabi-size)
 set(CMAKE_LINKER        arm-none-eabi-ld)
 
-# Prevent CMake from testing the compiler
+# Prevent CMake from testing the compiler in trying to compile a simple executable (otherwise it will crash)
 set(CMAKE_TRY_COMPILE_TARGET_TYPE STATIC_LIBRARY)
 
 # Search for programs in the host environment, libraries and headers in the target environment

@@ -17,10 +17,11 @@ Is to show that IDE just do some steps to combine different mandatory elements (
 >[!INFO] 
 >Detailed explanation about what to do for pending WIP tickers
 
-|  Ticket   | Details of work progress                                                                                                                                                                                                                                                                                                              |
-| :-------: | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **SFW_4** | Look at official ThreadX git repo, in ports/cm33/example/build/ and look at secure and non secure mode, how TZ is implemented and the function callback story (it seems that some callback have to be implemented when a Cortex-M has a TrustZone, recommended by ARM).<br>Look at how to debug a HardFault and LR corruption problem |
-|           |                                                                                                                                                                                                                                                                                                                                       |
+|       Ticket       | Details of work progress                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+| :----------------: | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+|     **SFW_4**      | ==DevEnv7== RP2350, ThreadX<br>Look at official ThreadX git repo, in ports/cm33/example/build/ and look at secure and non secure mode, how TZ is implemented and the function callback story (it seems that some callback have to be implemented when a Cortex-M has a TrustZone, recommended by ARM).<br>Look at how to debug a HardFault and LR corruption problem<br>Seems that RP2350 always boot in Secure code, maybe is NSC and Secure ThreadX required |
+| **Actual thought** | ==DevEnv7== RP2350, FreeRTOS<br>Start of mqtt client has to be in a task<br>cyw43_async_init() has to be called in an asynchrone context.<br>-> Is async_worker_ really necessary? Could it not be just started from a task?<br>Create sequence of creation. <br>    - Call of cyw43_init()<br>	- creation of client<br>	- start_client()<br>	- Blink<br>	- FreeRTOS creation and launch()                                                                     |
+|                    |                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
 
 ### Steps, workflow
 
@@ -37,15 +38,15 @@ Is to show that IDE just do some steps to combine different mandatory elements (
 | DOC_2 | ==ARM-Cortex== Explain and demystify CMSIS and other CMSIS (like DSP) files                                                                                                                                 | NEW   |
 | DOC_3 | ==Debug== Explain/demystify/depict the different debug interfaces, _DAP_, _TAP_, _JTAG_, _SWD_ etc..., their role, their physical interfaces, connectors (_SWD + UART_, 20 pins connectors etc..) and so on | NEW   |
 | DOC_4 | ==Linker== Understand linke files and how they work together with reset_handlers and startup.s files                                                                                                        | NEW   |
-| SYS_2 | ==CMake== Restructure all CMake files for them to be better structured and more clean                                                                                                                       | NEW   |
+| DOC_5 | ==Windows Complains== Gather all Windows complain in a Markdown file                                                                                                                                        | NEW   |
 
 
 **Work In Progress issues:**  
 
-| Issue | Description                                                                            | state |
-| ----- | -------------------------------------------------------------------------------------- | ----- |
-| DOC_1 | ==Blog== Create all documentation and explain the full work and process on each DevEnv | WIP   |
-|       |                                                                                        |       |
+| Issue | Description                                                                                                                                                                   | state |
+| ----- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----- |
+| DOC_1 | ==Blog== Create all documentation and explain the full work and process on each DevEnv                                                                                        | WIP   |
+| SYS_2 | ==CMake== Restructure all CMake files for them to be better structured and more clean<br>- Improvement: use target_sources() to avoid specifing those at add_executable() cmd | WIP   |
 
 
 **Resolved issues:**
@@ -85,12 +86,15 @@ Is to show that IDE just do some steps to combine different mandatory elements (
 |       |                                                                                                                     |                                                                     |
 
 
+
+
 **Resolved issues:**
 
-| Issue | Description                                                                                                                                           | state           |
-| ----- | ----------------------------------------------------------------------------------------------------------------------------------------------------- | --------------- |
-| SFW_8 | ==DevEnv5== STM32F4, ThreadX (Eclipseless, from official Github repo direct), BlackMagic debug probe, STMCubeless (keep only required specific files) | DONE - #d1bf642 |
-|       |                                                                                                                                                       |                 |
+| Issue  | Description                                                                                                                                           | state                                                         |
+| ------ | ----------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------- |
+| SFW_8  | ==DevEnv5== STM32F4, ThreadX (Eclipseless, from official Github repo direct), BlackMagic debug probe, STMCubeless (keep only required specific files) | DONE - #d                                                     |
+| SFW_11 | ==DevEnv8== RP2350, FreeRTOS, Raspberry Debug Probe, MQTT                                                                                      DONE - #86f3157<br>Warning about memory required for lwIP  ed  ed  ed  |
+|        |                                                                                                                                                                                                                       |
 
 
 **Rejected issues**
