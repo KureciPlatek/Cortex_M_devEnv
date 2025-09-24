@@ -61,10 +61,9 @@ elseif(DEFINED RTOS_FREERTOS)
 
    # Pull in FreeRTOS (must be before project)
    if(NOT DEFINED FREERTOS_KERNEL_PATH)
-      set(FREERTOS_KERNEL_PATH ${CMAKE_SOURCE_DIR}/FreeRTOS-Kernel)
+      set(FREERTOS_KERNEL_PATH ${CMAKE_SOURCE_DIR}/../../FreeRTOS-Kernel)
       message(STATUS "FREERTOS_KERNEL_PATH = ${FREERTOS_KERNEL_PATH}")
    endif()
-   include(FreeRTOS_Kernel_import.cmake)
 
 else()
    message (WARNING "No RTOS selected")

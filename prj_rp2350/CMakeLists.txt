@@ -19,7 +19,7 @@ set (MCPU         ${MCPU_CORTEX_M33})  # depends on target and required compilin
 set (MCPU_PATH    ${MCPU_CORTEX_M33_PATH})  # depends on target and required compiling options
 
 # --- Selection of RTOS
-set (RTOS_THREADX 1)   # Selection of RTOS, choose between RTOS_THREADX and RTOS_FREERTOS
+set (RTOS_FREERTOS 1)   # Selection of RTOS, choose between RTOS_THREADX and RTOS_FREERTOS
 include(${CMAKE_SOURCE_DIR}/cortex_m_rtos.cmake)
 
 # --- Project name and declaration
@@ -34,7 +34,7 @@ set (MFPU       ${MFPU_FPV4_SP_D16}) # depends on target and required compiling 
 set (MFLOAT_ABI ${MFLOAT_ABI_HARD})  # depends on target and required compiling options
 
 # Import FreeRTOS with CMake. Take directly from FreeRTOS repo
-include(${FREERSTOS_KERNEL_PATH}/portable/ThirdParty/GCC/RP2350_ARM_NTZ/FreeRTOS_Kernel_import.cmake)
+include(${FREERTOS_KERNEL_PATH}/portable/ThirdParty/GCC/RP2350_ARM_NTZ/FreeRTOS_Kernel_import.cmake)
 
 # --- Includes
 set(INCLUDE_DIR
@@ -48,7 +48,7 @@ set (PROJECT_SOURCES ${CMAKE_SOURCE_DIR}/app/main.c
                      ${CMAKE_SOURCE_DIR}/app/app_freeRtos.c
                      ${CMAKE_SOURCE_DIR}/lib/mqtt_pico2w.c
                      ${CMAKE_SOURCE_DIR}/lib/drv_gyroscope.c
-                     ${FREERSTOS_KERNEL_PATH}/portable/MemMang/heap_4.c # FreeRTOS stack/mem management style
+                     ${FREERTOS_KERNEL_PATH}/portable/MemMang/heap_4.c # FreeRTOS stack/mem management style
 )
 
 # --- Linker
