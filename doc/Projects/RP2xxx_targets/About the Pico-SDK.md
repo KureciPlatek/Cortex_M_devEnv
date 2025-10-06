@@ -72,62 +72,24 @@ How to install it is well explained in section "UNIX Command Line" from pico-sdk
 
 Same for [[#On Linux]], all important info may be found here: [GitHub - raspberrypi/pico-sdk](https://github.com/raspberrypi/pico-sdk) on how to install and prepare the Pico SDK on your machine.
 
-#### That's where the fun begins
+Just be careful to fully clone github repository and its submodules like for Linux:
+```bash
+# Init submodules
+git submodule update --init
 
-I added the git repo to my project to use it decoupled from rest of my laptop (keep things decoupled and paths relative). I ~~strongly modified~~ adapted the `CMakeLists.txt`, as Pico-SDK comes integrated with a full `CMake` managed development environment. Many external programs and tools are automated and required by this `CMake` managed environment, like `TinyUSB`, `Python` and `Picotool`.
-
-Furthermore, `pico-sdk`'s `CMake` integrates automatic `Github` fetch mechanism. Which doesn't make things quite decoupled but keeps `CMakeLists.txt` quite simple.
-
-The most simple example given in Github didn't worked:
-```dos
-C:\...\prj_rp2040\bin>mingw32-make
-[ 14%] Building C object CMakeFiles/prj_rp.dir/app/main.c.obj
-C:\...\prj_rp2040\app\main.c:15:10: fatal error: pico/stdlib.h: No such file or directory
-   15 | #include "pico/stdlib.h"
-      |          ^~~~~~~~~~~~~~~
-compilation terminated.
-```
-
-Which makes me wondered about my way of installing the SDK and how strong it is coupled/automated. The file do exists, I also tried to add it to include files:
-
-```cmake
-set(INCLUDE_DIR
-   ${CMAKE_SOURCE_DIR}/app
-   ${PICO_SDK_PATH}/src/common/pico_stdlib_headers/include
-)
-
-...
-
-add_executable(${CMAKE_PROJECT_NAME} ${PROJECT_SOURCES})
-target_include_directories(${CMAKE_PROJECT_NAME} PUBLIC ${INCLUDE_DIR})
-```
- 
- But then other error arise:
-
-```dos
-C:\...\prj_rp2040\bin>mingw32-make
-[ 14%] Building C object CMakeFiles/prj_rp.dir/app/main.c.obj
-In file included from C:\...\prj_rp2040\app\main.c:15:
-C:\...\pico-sdk\src\common\pico_stdlib_headers\include/pico/stdlib.h:10:10: fatal error: pico.h: No such file or directory
-   10 | #include "pico.h"
-      |          ^~~~~~~~
-compilation terminated.
-```
-
-Which is quite strange, because it is Pico-SDK's own environment.
-
-Full automation of CMake doesn't look quite successful until now so I decided to clone the repo, do `git submodule update --init` as asked by Pico-SDK's CMake environment and remove everything from my CMakeLists.txt to reach the simplest, as presented in SDK's Github repository.
-
-Git submodule fetched:
-```dos
+# Expected result:
 C:\...\Project_MarbleFrame\pico-sdk>git submodule update --init
 Submodule 'lib/btstack' (https://github.com/bluekitchen/btstack.git) registered for path 'lib/btstack'
 Submodule 'lib/cyw43-driver' (https://github.com/georgerobotics/cyw43-driver.git) registered for path 'lib/cyw43-driver'
 Submodule 'lib/lwip' (https://github.com/lwip-tcpip/lwip.git) registered for path 'lib/lwip'
 Submodule 'lib/mbedtls' (https://github.com/Mbed-TLS/mbedtls.git) registered for path 'lib/mbedtls'
 Submodule 'tinyusb' (https://github.com/hathach/tinyusb.git) registered for path 'lib/tinyusb'
+
 ```
 
+As asked by `pico-sdk`.
+
+Everything should be fine.
 ### Windows installer for Pico-SDK
 
 After some research, there is an Installer on Windows that does it all, but will install the following stuff:
@@ -247,8 +209,6 @@ drwxr-xr-x 8 jeremie jeremie   4096 Jun 15 20:46 share/
 
 
 
-
-
 ---
 # Configuration of `CMakeLists.txt`
 
@@ -324,13 +284,104 @@ There are other things to configure on CMakeLists.txt, but as they should be sel
 
 # Debug of `rp2xxx` family with Raspberry Pi Debug Probe
 
-#todo
-
 ### `openOCD` config to flash & debug with RP Debug probe
 
-After an apt-get upgrade of openocd, I did got all rp2350 config file. Executing 
+To start `openOCD` with a Raspberry Debug Probe, you have to call the following line:
 ```bash
-sudo openocd -f interface/cmsis-dap.cfg -f target/rp2040.cfg -c "adapter speed 5000"
+# Start openOCD for a connected Raspberry Debug Probe:
+sudo openocd -f interface/cmsis-dap.cfg -f target/rp2350.cfg -c "adapter speed 5000"
+
+# Reply for a RP2350:
+Open On-Chip Debugger 0.12.0+dev-snapshot (2025-07-16-14:15)
+Licensed under GNU GPL v2
+For bug reports, read
+        http://openocd.org/doc/doxygen/bugs.html
+Info : [rp2350.cm0] Hardware thread awareness created
+Info : [rp2350.cm1] Hardware thread awareness created
+ocd_process_reset_inner
+adapter speed: 5000 kHz
+Info : Listening on port 6666 for tcl connections
+Info : Listening on port 4444 for telnet connections
+Info : Using CMSIS-DAPv2 interface with VID:PID=0x2e8a:0x000c, serial=E663B035974F4826
+Info : CMSIS-DAP: SWD supported
+Info : CMSIS-DAP: Atomic commands supported
+Info : CMSIS-DAP: Test domain timer supported
+Info : CMSIS-DAP: FW Version = 2.0.0
+Info : CMSIS-DAP: Interface Initialised (SWD)
+Info : SWCLK/TCK = 0 SWDIO/TMS = 0 TDI = 0 TDO = 0 nTRST = 0 nRESET = 0
+Info : CMSIS-DAP: Interface ready
+Info : clock speed 5000 kHz
+Info : SWD DPIDR 0x4c013477
+Info : [rp2350.cm0] Cortex-M33 r1p0 processor detected
+Info : [rp2350.cm0] target has 8 breakpoints, 4 watchpoints
+Info : [rp2350.cm0] Examination succeed
+Info : [rp2350.cm1] Cortex-M33 r1p0 processor detected
+Info : [rp2350.cm1] target has 8 breakpoints, 4 watchpoints
+Info : [rp2350.cm1] Examination succeed
+Info : [rp2350.cm0] starting gdb server on 3333
+Info : Listening on port 3333 for gdb connections
+Error: [rp2350.cm0] clearing lockup after double fault
+Error: [rp2350.cm0] Polling failed, trying to reexamine
+Info : [rp2350.cm0] Cortex-M33 r1p0 processor detected
+Info : [rp2350.cm0] target has 8 breakpoints, 4 watchpoints
+Info : [rp2350.cm0] Examination succeed
+
 ```
 
-System View Description files may be found in `pico-sdk`, at `src/rp2350/hardware_regs/rp2350.svd`
+It is not mandatory to call it from project folder, as it will call the rp2350.cfg file from official repository. It should work. If not, get the rp2350.cfg file from Raspberry and change it in `/usr/share/openocd/scripts/` as explained in [[setup/Linux/openOCD_setup|openOCD_setup]].
+
+#### Configure on VSCode
+
+Create a new `lanch.json` configuration, from the wizard in VSCode, when on your `launch.json` file:
+
+Again, no idea how to configure this `launch.json`, documentation is poor and error messages on terminal are catastrophic (it is difficult to understand why it doesn't work. Error messages are strange). But after some struggle, I managed to get a configuration in `launch.json` that works:
+
+```json
+   "configurations": [
+      {
+         "name": "prj_rp2350_debug_openOcd",
+         "cwd": "${workspaceRoot}",
+         "executable": "${workspaceRoot}/prj_rp2350/bin/prj_rp.elf",
+         "request": "launch",
+         "type": "cortex-debug",
+         "servertype": "external",
+         "gdbTarget": "localhost:3333",
+         "svdFile": "${workspaceFolder}/../../pico-sdk/src/rp2350/hardware_regs/RP2350.svd",
+         "runToEntryPoint": "main",
+         "overrideLaunchCommands": [
+             "monitor reset init"
+         ]
+      },
+      {
+	     ... /* other configs */
+      }
+```
+
+Element `"name"` is free for you to set as you want, as it is just a name.
+Those elements are fix and should not be modified:
+- `"cwd": "${workspaceRoot}"`
+- `"request": "launch"`
+- `"type": "cortex-debug"`
+- `"servertype": "external"`: here we are using an external `openOCD` `gdb-server`. You may change it to call an integrated `gdb-server`
+- `"runToEntryPoint": "main"`
+Those are to be configured to your paths and configuration
+- `"executable": "${workspaceRoot}/prj_rp2350/bin/prj_rp.elf"`: path to the elf file you want to debug
+- `"gdbTarget": "localhost:3333"`: URL to the running `openOCD` `gdb-server`
+- `"svdFile": "${workspaceFolder}/../../pico-sdk/src/rp2350/hardware_regs/RP2350.svd",`: is the path to your `pico-sdk/.../RP2350.svd` file. The System View Description is provided by `pico-sdk` in the following path: `src/rp2350/hardware_regs/rp2350.svd`
+
+>[!WARNING]
+>This VSCode debug session expects you to have a running `gdb-server`, so you still have to start `openOCD` from another terminal with the command described earlier.
+
+
+Here is a screenshot of a debug session on VSCode:
+
+![[debug_example_VSCode_rp2350.png]]
+
+You have the typical view of a debugger where you can set breakpoints, look at call-stack and registers, stop, step, continue and so on. 
+
+Also, tab `SERIAL MONITOR` allows you to connect to `/dev/ttyACM0`, which is the Raspberry Debug Probe serial communication. It will allow you to read logs`/printf()` of your code, if you configured properly as explained earlier (set `pico_enable_stdio_uart(1)` in section [[#Configuration of `CMakeLists.txt`]].
+
+
+>[!HINT]
+>Configure `XRTOS` tab in the lower part of the GUI could be nice, to see `FreeRTOS` statistics and run-time of tasks/threads.
+

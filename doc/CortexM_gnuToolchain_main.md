@@ -81,7 +81,7 @@ Link to all markdown files and project folders:
 - [ ]  [[External sources and program to install]]
 - [ ]  setup
 	- [ ]  Linux
-		- [ ] [[CMake_setup]]
+		- [ ] [[setup/Linux/CMake_setup]]
 		- [ ] [[setup/Linux/gnu_arm_toolchain_setup]]
 		- [ ] 
 	- [ ]  Windows

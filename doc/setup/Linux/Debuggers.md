@@ -53,8 +53,8 @@ For the `gdb` program, I mainly used `arm-none-eabi-gdb`, from the last official
 
 ### Debug with J-Link
 
-Todo
+#todo
 
 ### Debug with Raspberry Debug Probe
 
-Todo
+#todo
