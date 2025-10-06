@@ -5,6 +5,34 @@
    "version": "0.2.0",
    "configurations": [
       {
+         "name": "prj_rp2350_debug_openOcd",
+         "cwd": "${workspaceRoot}",
+         "executable": "${workspaceRoot}/prj_rp2350/bin/prj_rp.elf",
+         "request": "launch",
+         "type": "cortex-debug",
+         "servertype": "external",
+         "gdbTarget": "localhost:3333",
+         "svdFile": "${workspaceFolder}/../../pico-sdk/src/rp2350/hardware_regs/RP2350.svd",
+         "runToEntryPoint": "main",
+         "overrideLaunchCommands": [
+             "monitor reset init"
+         ]
+      },
+      {
+         "name": "prj_rp2040_debug_openOcd",
+         "cwd": "${workspaceRoot}",
+         "executable": "${workspaceRoot}/prj_rp2040/bin/prj_rp.elf",
+         "request": "launch",
+         "type": "cortex-debug",
+         "servertype": "external",
+         "gdbTarget": "localhost:3333",
+         "svdFile": "${workspaceFolder}/../../pico-sdk/src/rp2350/hardware_regs/RP2040.svd",
+         "runToEntryPoint": "main",
+         "overrideLaunchCommands": [
+             "monitor reset init"
+         ]
+      },
+      {
          "type": "cortex-debug",
          "name": "prj_h7_debug_openOcd",
          "cwd": "${workspaceRoot}/prj_h7/",

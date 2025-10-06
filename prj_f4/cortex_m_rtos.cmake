@@ -1,5 +1,3 @@
-# Cmake subfile to list required inputs for STM32's ThreadX library
-
 if (DEFINED RTOS_THREADX)
    message(STATUS  "Selected RTOS: ThreadX")
 
@@ -27,7 +25,7 @@ if (DEFINED RTOS_THREADX)
    # No TrustZone and security requirement for ThreadX on H7
    #   ${THREADX_PATH}/ports/${MCPU_PATH}/gnu/src/txe_thread_secure_stack_allocate.c
    #   ${THREADX_PATH}/ports/${MCPU_PATH}/gnu/src/tx_initialize_low_level.S   # not this one as it is rewritten in project (avoid modifs on external project)
-      ${THREADX_PATH}/ports/${MCPU_PATH}/gnu/src/tx_misra.S
+   #   ${THREADX_PATH}/ports/${MCPU_PATH}/gnu/src/tx_misra.S
       ${THREADX_PATH}/ports/${MCPU_PATH}/gnu/src/tx_thread_context_restore.S
       ${THREADX_PATH}/ports/${MCPU_PATH}/gnu/src/tx_thread_context_save.S
       ${THREADX_PATH}/ports/${MCPU_PATH}/gnu/src/tx_thread_interrupt_control.S
