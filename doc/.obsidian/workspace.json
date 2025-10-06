@@ -6,33 +6,41 @@
       {
         "id": "ba7bc94631a89312",
         "type": "tabs",
+        "dimension": 51.303780964797916,
         "children": [
           {
-            "id": "0f24d3316c71da27",
+            "id": "d2a3a1586b640c25",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "CortexM_gnuToolchain_tickets.md",
+                "file": "Projects/RP2xxx_targets/Project 2  RP2350 with Cortex-M33 on Linux.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "CortexM_gnuToolchain_tickets"
+              "title": "Project 2  RP2350 with Cortex-M33 on Linux"
             }
-          },
+          }
+        ]
+      },
+      {
+        "id": "abdaf9f7627552de",
+        "type": "tabs",
+        "dimension": 48.696219035202084,
+        "children": [
           {
-            "id": "cb158d07c136dde6",
+            "id": "c7de82603cf61c66",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "common/External sources and program to install.md",
+                "file": "Projects/RP2xxx_targets/About the Pico-SDK.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "External sources and program to install"
+              "title": "About the Pico-SDK"
             }
           }
         ]
@@ -92,7 +100,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 346.5
+    "width": 341.5
   },
   "right": {
     "id": "77f7aa45f410eab1",
@@ -169,48 +177,57 @@
   },
   "left-ribbon": {
     "hiddenItems": {
-      "switcher:Open quick switcher": false,
       "graph:Open graph view": false,
-      "canvas:Create new canvas": false,
       "daily-notes:Open today's daily note": false,
       "templates:Insert template": false,
+      "bases:Create new base": false,
+      "switcher:Open quick switcher": false,
+      "canvas:Create new canvas": false,
       "command-palette:Open command palette": false
     }
   },
-  "active": "0f24d3316c71da27",
+  "active": "d2a3a1586b640c25",
   "lastOpenFiles": [
-    "RP2xxx_targets/Project 2  RP2350 with Cortex-M33 on Linux and Windows.md",
-    "common/External sources and program to install.md",
-    "common/Theory of debugging with GDB.md",
-    "STM32_targets/Project 3 STM32F4 on Linux.md",
-    "CortexM_gnuToolchain_main.md",
+    "diagrams/rp2350_overview.svg",
+    "Projects/RP2xxx_targets/About the Pico-SDK.md",
+    "Projects/RP2xxx_targets/Project 2  RP2350 with Cortex-M33 on Linux.md",
+    "Projects/STM32_targets/Project 1 STM32H7 on Linux.md",
+    "Projects/RP2xxx_targets/ThreadX_on_rp2350_cortexM33.md",
+    "Projects/RP2xxx_targets/Project 1 RP2040 on Linux.md",
+    "Projects/information_about_projects.md",
+    "diagrams/rp2xxx_setup.svg",
+    "diagrams/stm32h7_setup.svg",
+    "Projects/STM32_targets/Project 3 STM32F4 on Linux.md",
     "CortexM_gnuToolchain_tickets.md",
-    "common/CortexM_ThreadX.md",
-    "common/Set of CMake script skeleton.md",
-    "STM32_targets/Project 2 STM32H7 on Windows.md",
-    "STM32_targets/Project 1 STM32H7 on Linux.md",
-    "RP2xxx_targets/About the Pico-SDK.md",
-    "Debug of Cortex-M with gdb and VSCode.md",
-    "Project_blog/common/CortexM_ThreadX.md",
-    "Project_blog/common/External sources and program to install.md",
-    "Project_blog/CortexM_gnuToolchain_tickets.md",
-    "Project_blog/CortexM_gnuToolchain_main.md",
-    "README.md.md",
-    "STM32H7_prj/STM32H7 Project.md",
-    "STM32H7_prj/XSPI.md",
-    "STM32H7_prj",
-    "STM32N657 Project.md",
-    "env_RP2040_RPDebugProbe.md",
-    "Project_blog/common/Theory of debugging with GDB.md",
-    "Project_blog/common/Set of CMake script skeleton.md",
-    "Project_blog/STM32_targets/Project 1 STM32H7 on Linux.md",
-    "Project_blog/STM32_targets/Project 3 STM32F4 on Linux.md",
-    "Project_blog/STM32_targets/OpenOCD cheat on STM32CubeIDE.md",
-    "Project_blog/Raspberry_pico_targets",
-    "Project_blog/STM32_targets",
-    "Project_blog/common",
-    "Project_blog",
-    "CortexM_devEnv",
-    "CortexM_ThreadX_allDiagrams.drawio"
+    "Projects/RP2xxx_targets/Project 3  RP2350 with RISC-V on Linux.md",
+    "Projects/STM32_targets/Project 2 STM32H7 on Windows.md",
+    "setup/Linux/CMake_setup.md",
+    "setup/Linux/Debuggers.md",
+    "setup/Linux/External_sources_setup.md",
+    "setup/Linux/gnu_arm_toolchain_setup.md",
+    "setup/Windows/External_sources_setup.md",
+    "setup/Windows/openOCD_setup.md",
+    "setup/Windows/gnu_arm_toolchain_setup.md",
+    "feedback_opinion/Set of CMake script skeleton.md",
+    "feedback_opinion/CortexM_ThreadX.md",
+    "CortexM_gnuToolchain_main.md",
+    "feedback_opinion/troubleshooting.md",
+    "toSortFromReview/windows-environment.md",
+    "toSortFromReview/linux-environment.md",
+    "toSortFromReview/Improvements.md",
+    "toSortFromReview/gdb-debugging-overview.md",
+    "[[setup/Linux",
+    "[[setup",
+    "diagrams/OpenOCD_hack.svg",
+    "diagrams/gdb_gdbServer_view.svg",
+    "Projects",
+    "toSortFromReview",
+    "setup/Windows",
+    "setup/Linux",
+    "diagrams/WorkingEnvSetup.svg",
+    "setup",
+    "theory",
+    "diagrams/All_diagrams.drawio",
+    "diagrams"
   ]
 }

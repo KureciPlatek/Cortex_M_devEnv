@@ -1,34 +1,69 @@
 
-I used CMake to manage project as it is quite powerful to configure required sources, external sources, compiling options, and so on. It is also quite spread in the industry and projects and allows few modifications to be used for another target.
+>[!Abstract]
+>I used `CMake` to manage project as it is quite powerful to configure required sources, external sources, compiling options, and so on. It is also quite used in the industry. It also allows to spare time and offers more flexibility than `Makefiles`
+>
+>This section explains how I configured and used `CMake` for all project examples, `rp2xx` and `stm32xx` families.
+
+
+My aim was to create one style of CMakeLists.txt that only requires few changes for all projects and also to keep it as simple and small as possible.
 
 Well in reality, some family of microcontrollers are too different and project management is too different for all projects to be managed with one CMakeLists.txt (as said in the introduction).
 
-So I did two CMakeLists.txt, one for STM32 family and one for RP family (Raspberry RP2040 and RP2350)
+So I did two `CMakeLists.txt`, one for STM32 family and one for RP family (Raspberry RP2040 and RP2350). And each project will have its own CMakeLists.txt
+
+
+>[!INFORMATION] My philosophy about `CMake`
+>There is a trend to have a lot of `CMakeLists.txt` for each project, sub-projects, folders and so on, which all calls each-other.
+>
+>I don't want that.
+>
+>I want to keep **_one_**, single, simple `CMakeLists.txt` for **_one_** project. No modularity of many `CMakeLists.txt` everywhere. Which on my opinion increases tight coupling (like it is done for examples of pico-sdk), instead of keeping things simple. 
+>
+>Why I consider this way to increase tight coupling? Simply because all those `CMakeLists.txt` are at the end depend from each other and you can't just have a simple, open-closed project with one `CMakeLists.txt`, independent from the others...
+
 
 The role of those CMakeLists.txt files will be to:
  - Define project
- - Set compiler and environment in a sub .cmake file
- - Define path to different external sources (HAL and ThreadX) in sub .cmake files
+ - Set compiler and environment in a `sub.cmake` file
+ - Define path to different external sources (HAL and `ThreadX`) in `sub.cmake` files
  - Define sources of our project
  - Set all compilation flags
 
+For each project, we will find the following files for `CMake`:
+
+```javascript
+📁 prj_xx/
+├── 📁 .../
+├── 📄 ...
+├── 📄 CMakeLists.txt (main CMake file)
+├── 📄 stm32_hal_srcList.cmake (configure HAL sources for stm32xx family - stm32xx only)
+├── 📄 cortex_m_toolchain.cmake (configure GNU Arm toolchain)
+└── 📄 cortex_m_rtos.cmake (configure RTOS sources for our Cortex-M)
+```
+
+
+
+# Structure for all projects
+
+### `cortex_m_toolchain.cmake`
+
+I tend to keep all projects with their lib and external sources near to each other but it is purely an opinion and scatter those sources across your PC is also a good option. The idea here is to tell to `CMake` the most common folder for all external source, then in more `specific_target_lib_and_sources.cmake` files, define the clear path to them. How I organized it could DEFINITELY be modified.
+
+### `cortex_m_rtos.cmake`
+
+
+# For STM32 family
+
+
 For easiness on `CMakeLists.txt` and, because file and folder names are alike for STM32's families, I took the liberty to write the same `CMakeLists.txt` for STM32 target project, and change only between H7 and F4. I defined those two string as a variable and a switch:
+
 ```cmake
 set (MCU_FAMILY_UPPERCASE ${UPPERCASE_MCU_FAMILY_H7})
 set (MCU_FAMILY_LOWERCASE ${LOWERCASE_MCU_FAMILY_H7})
 set (CMAKE_PROJECT_NAME prj_${MCU_FAMILY_LOWERCASE})
 ```
 
-# Structure for all projects
 
-### cortex_m_toolchain.cmake
-
-I tend to keep all projects with their lib and external sources near to each other but it is purely an opinion and scatter those sources across your PC is also a good option. The idea here is to tell to CMake the most common folder for all external source, then in more specific_target_lib_and_sources.cmake files, define the clear path to them. How I organized it could DEFINITELY be modified.
-
-### cortex_m_rtos.cmake
-
-
-# For STM32 family
 
 We require the HAL for each STM32's families of microcontroller: STM32H7 and STM32F4. HAL are indeed too different between STM32's families that two different set of HAL are required (you may find each HAL sources on STMicroelectronics GitHub repositories)
 
@@ -63,7 +98,6 @@ set (HAL_PROJECT_SOURCES
 - add_custom_command() to flash automatically and start debug session if debug?
 - Add command to flas over STLink or start with debugger and so on (see later)
 - Use target_sources() to avoid specifing those at add_executable() cmd
-- 
 
 # For RP family
 
@@ -83,7 +117,7 @@ Nothing to declare
 
 ### MinGW and the lovely backslashes
 
-To generate on Windows, thank to the "Stop thinking Windows is good", I just blocked for a couple of minutes because you have to specify to generate makefile for MinGW style (no idea why and I don't want to know why):
+To generate on Windows, as it is not a simple UNIX environment, GNU is strangely ported on it (on my opinion), I installed GNU with MinGW and makefiles have to be made for MinGW:
 
 ```bash
 $ cmake .. -G "MinGW Makefiles" 
@@ -95,16 +129,11 @@ $ mingw32-make
 ```
 It may surely changes if you selected another make alternative for Windows (ninja, Cygwin, ...)
 
->[!TIP] Stop thinking Windows is good
->They are the only one using "\\" instead of "/", which make all path useless on `CMakeLists.txt`. Yay.
->So when writing decoupled CMake files, as platform independent as possible, I wanted to use `${HOME}` environment variable, sadly, for Windows, `${HOMEPATH}` provides a path with "\\", which will generate errors. So I had to put my full path in `stm32.cmake` file.
 
-# General CMake opinion
 
-I find generally that people overuse CMake and its many functions for same functionality. 
+# General `CMake` opinion
 
->[!ERROR]
->When using two different ways, for the same goal.
+I find generally that people overuse `CMake` and its many functions for same functionality. 
 
 For example, to add `-Wall` flag to compiler, there are different options:
 
