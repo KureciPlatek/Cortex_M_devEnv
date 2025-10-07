@@ -21,5 +21,5 @@ Look here: [[setup/Linux/External_sources_setup|External_sources_setup]]
 
 ## RP2xxx's Pico-SDK
 
-pico-sdk is a little bit different as its install process and use imposes some things. How to set it up on you development environment, then use it on your projects with CMake is explained separately here: [[About the Pico-SDK]].
+pico-sdk is a little bit different as its install process and use imposes some things. How to set it up on you development environment, then use it on your projects with CMake is explained separately here: [[About_the_Pico-SDK]].
 

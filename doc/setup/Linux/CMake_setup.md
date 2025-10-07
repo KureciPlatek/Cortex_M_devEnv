@@ -124,4 +124,4 @@ set (HAL_PROJECT_SOURCES
 
 # For `rp2xxx` family 
 
-Look at all description here: [[About the Pico-SDK]], section "Configuration of CMakeLists.txt".
+Look at all description here: [[About_the_Pico-SDK]], section "Configuration of CMakeLists.txt".

@@ -111,7 +111,7 @@ SysTick_Handler:
 ...
 >```
 >It may be customized, like define other core IRQ handlers like `HardFault_Handler` (which could also be defined in C)
->For more information, look at explanations in [[Project 3 STM32F4 on Linux]], section "`Threadx` modifications".
+>For more information, look at explanations in [[Project_3_STM32F4_on_Linux]], section "`Threadx` modifications".
 
 
 >[!WARNING] 
@@ -211,5 +211,5 @@ For an exhaustive list of source file I required for the projects, please look a
 
 # RP2xxx's Pico-SDK
 
-pico-sdk is a little bit different as its install process and use imposes some things. How to set it up on you development environment, then use it on your projects with CMake is explained separately here: [[About the Pico-SDK]].
+pico-sdk is a little bit different as its install process and use imposes some things. How to set it up on you development environment, then use it on your projects with CMake is explained separately here: [[About_the_Pico-SDK]].
 

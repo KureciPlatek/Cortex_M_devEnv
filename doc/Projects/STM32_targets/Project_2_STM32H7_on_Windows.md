@@ -98,16 +98,16 @@ You are now ready to debug.
 
 >[!HINT]
 >It is also possible to configure a startup script for `gdb` for it to automatically connect, flash and prepare target when it is called.
->You will find all explanations in [[Project 1 STM32H7 on Linux]]
+>You will find all explanations in [[Project_1_STM32H7_on_Linux]]
 
 
 ## Look at `printf()` from project
 
-Same as [[Project 1 STM32H7 on Linux]]
+Same as [[Project_1_STM32H7_on_Linux]]
 
 ## Configure debugging chain on VSCode
 
-Same as [[Project 1 STM32H7 on Linux]]
+Same as [[Project_1_STM32H7_on_Linux]]
 
 
 ---

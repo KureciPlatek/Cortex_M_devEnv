@@ -3,7 +3,7 @@
 >In this section, we will configure `prj_rp2350` project to run an `RTOS` on it, configure and run Wi-Fi communication with the `CYW43` chip available on `pico2_w` board and publish/subscribe to `MQTT` broker and services 
 
 >[!TIP] Prerequisite
->You configured the `rp2xxx` development environment, as explained in [[About the Pico-SDK]]. We will compile and run program here.
+>You configured the `rp2xxx` development environment, as explained in [[About_the_Pico-SDK]]. We will compile and run program here.
 
 >[!WARNING]
 >I did not succeed to port `ThreadX` on RP230 yet, so I had to **switch to `FreeRTOS`**. 

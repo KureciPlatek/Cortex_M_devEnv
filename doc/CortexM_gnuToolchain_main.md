@@ -88,13 +88,13 @@ Link to all markdown files and project folders:
 - [ ] Set of CMake script's skeleton [[Set of CMake script skeleton]]
 - [ ] How to handle and manage ThreadX's sources [[CortexM_ThreadX]]
 - [ ] STM32 targets:
-	- [ ] Project 1: STM32H7 on Linux [[Project 1 STM32H7 on Linux]]
-	- [ ] Project 2: STM32H7 on Windows [[Project 2 STM32H7 on Windows]]
-	- [ ] Project 3: STM32F4 on Linux [[Project 3 STM32F4 on Linux]]
+	- [ ] Project 1: STM32H7 on Linux [[Project_1_STM32H7_on_Linux]]
+	- [ ] Project 2: STM32H7 on Windows [[Project_2_STM32H7_on_Windows]]
+	- [ ] Project 3: STM32F4 on Linux [[Project_3_STM32F4_on_Linux]]
 - [ ] Raspberry Pico targets:
-	- [ ] Project 1: RP2040 on Linux [[Project 1 RP2040 on Linux]]
+	- [ ] Project 1: RP2040 on Linux [[Project_1_RP2040_on_Linux]]
 	- [ ] Project 2:  RP2350 with Cortex-M33 on Linux and Windows [[Project 2  RP2350 with Cortex-M33 on Linux and Windows]]
-	- [ ] Project 3:  RP2350 with RISC-V on Linux [[Project 3  RP2350 with RISC-V on Linux]]
+	- [ ] Project 3:  RP2350 with RISC-V on Linux [[Project_3 _RP2350_with_RISC-V_on_Linux]]
 
 
 
