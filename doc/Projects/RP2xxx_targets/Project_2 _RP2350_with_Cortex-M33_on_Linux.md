@@ -39,6 +39,7 @@ For `MQTT` to work on the `RP2350`, it requires some components to be included a
 
 To have some fun, discovering that it all works (engineers are big kids wanting to have fun no? Just don't burn the laptop of your boss while short-circuiting the full open-space like I did once...) you may use any MQTT analyzer application and connect your smartphone to the RPi5 Wi-Fi and find the MQTT broker.
 
+
 # `FreeRTOS` 
 
 ## Installation
@@ -181,4 +182,46 @@ As well as information provided by following examples:
 - [pico-examples/pico_w/wifi/freertos at master · raspberrypi/pico-examples · GitHub](https://github.com/raspberrypi/pico-examples/tree/master/pico_w/wifi/freertos)
 
 Also, reading code :) even if I am not a fan of people saying "the code is documentation enough", which for me is like "I am too lazy to take time to explain, refactor and reorganize what I did. Just try to follow my unexplained decisions".
+
+# Run program
+
+After all is well configured as explained before, and when your elf file is ready, you may flash and run the program with `gdb` as explained in prior documents. I did it only with openOCD and Raspberry Debug Probe, but it should also be fine with JLink EDU and Black Magic Probe, as explained in [[Project_1_RP2040_on_Linux]]
+
+1. Run `gdb-server` with `openOCD`:
+```bash
+# Run openOCD
+sudo openocd -f interface/cmsis-dap.cfg -f target/rp2350.cfg -c "adapter speed 5000"
+
+# Expected prompt:
+```
+
+2. Run `gdb` (it should use the `.gdbinit` file inside the `prj_rp2350` project folder):
+
+```bash
+arm-none-eabi-gdb -iex "add-auto-load-safe-path ./" ./bin/*.elf
+```
+ 
+ Normally you should have the capacity to debug now. the  `.gdbinit` file should have already connect to `openOCD`, load program on target's flash and be ready to run.
+
+
+### On VSCode
+
+To configure a debug session on VSCode with `openOCD` and Raspberry Debug Probe, I had to modify the `launch.json` file of VSCode to add a configuration as follow:
+
+```json
+      {
+         "name": "prj_rp2350_debug_openOcd",
+         "cwd": "${workspaceRoot}",
+         "executable": "${workspaceRoot}/prj_rp2350/bin/prj_rp.elf",
+         "request": "launch",
+         "type": "cortex-debug",
+         "servertype": "external",
+         "gdbTarget": "localhost:3333",
+         "svdFile": "${workspaceFolder}/../../pico-sdk/src/rp2350/hardware_regs/RP2350.svd",
+         "runToEntryPoint": "main",
+         "overrideLaunchCommands": [
+             "monitor reset init"
+         ]
+      },
+```
 
