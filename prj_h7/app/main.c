@@ -31,6 +31,22 @@ void SystemClock_Config(void);
 static void MPU_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_USART3_UART_Init(void);
+// static void configureSWO(void);
+
+#define SWO_BAUDRATE 115200U
+#define ARM_LAR_ACCESS_ENABLE 0xC5ACCE55
+
+/**
+ * @brief overwrite _write() from syscall.c to use ITM_SendChar() instead of __io_putchar()
+ */
+// int _write(int file, char *ptr, int len)
+// {
+//    for (int i = 0; i < len; ++i)
+//    {
+//       ITM_SendChar(*ptr++);
+//    }
+//    return len;
+// }
 
 /**
  * @brief  The application entry point.
@@ -55,15 +71,66 @@ int main(void)
    MX_GPIO_Init();
    MX_USART3_UART_Init();
 
+// #ifdef USE_SWO
+//    configureSWO();
+// #endif
+
    MX_ThreadX_Init();
+
+//   __HAL_DBGMCU_FREEZE_HRTIM
 
    /* Infinite loop */
    while (1){}
 }
 
+// void configureSWO(void)
+// {
+//    /* RCC and GPIO alternate function done elsewere */
+//
+//    CoreDebug->DEMCR |= CoreDebug_DEMCR_TRCENA_Msk; // Bit 24 of DEMCR Debug Exception and Monitor Control Register
+//
+// #if (__CORTEX_M == 0x07U)
+//    /* in Cortex M7, the trace needs to be unlocked via the DWT->LAR register with 0xC5ACCE55 value */
+//    DWT->LAR = ARM_LAR_ACCESS_ENABLE;
+// #endif
+//
+//    const uint32_t clock_frequency = HAL_RCC_GetHCLKFreq(); // rcc_ahb_frequency;
+// 	const uint32_t divisor = (clock_frequency / SWO_BAUDRATE) - 1U;
+//
+//    /* Configure TPI as 1 bit mode? */
+//    TPI->SPPR = (0x01 & TPI_SPPR_TXMODE_Msk); /* b10 = UART/NRZ (async) b01 = Manchester (See TPIU_SPPR definition in ARM) */
+//    TPI->ACPR = divisor;
+//
+//
+// //   TPIU_CURRENT_PORT_SIZE     = 1; /* port size = 1 bit */
+// //   TPIU_SELECTED_PIN_PROTOCOL = 1; /* trace port protocol = Manchester */
+// //   TPIU_ASYNC_CLOCK_PRESCALER = (HAL_RCC_GetHCLKFreq() / SWO_FREQ) - 1;
+// //   TPIU_FORMATTER_AND_FLUSH_CONTROL = 0x100; /* turn off formatter (0x02 bit) */
+//    DBGMCU->CR = DBGMCU_CR_DBG_SLEEPD1 | DBGMCU_CR_DBG_STOPD1 | DBGMCU_CR_DBG_STANDBYD1 | DBGMCU_CR_DBG_TRGOEN;
+//
+// //   SWO->SPPR;
+//
+//    DWT->CTRL |= DWT_CTRL_CYCCNTENA_Msk;
+
+
+//   uint32_t myVar1 = TPI->ACPR;
+//   uint32_t myVar2 = DBGMCU->CR;
+
+//   ITM->LAR = 0xC5ACCE55;
+//   ITM->TCR = ITM_TCR_TraceBusID_Msk | ITM_TCR_SWOENA_Msk | ITM_TCR_SYNCENA_Msk | ITM_TCR_ITMENA_Msk;
+//   ITM->TPR = ITM_TPR_PRIVMASK_Msk; /* all ports accessible unprivileged */
+//   ITM->TER = 1; /* enable stimulus channel 0, used with ITM_SendChar() */
+//
+//   /* this apparently turns off sync packets, see SYNCTAP in DDI0403D pdf: */
+//   DWT->CTRL = 0x400003FE;
+//   printf("This var: %ld %ld\n", myVar1, myVar2);
+// }
+
 /**
  * @brief System Clock Configuration
  * @retval None
+ * How to get were comes it all from:
+ * __HAL_RCC_GET_PLL_OSCSOURCE() == RCC_PLLSOURCE_HSI
  */
 void SystemClock_Config(void)
 {
@@ -73,6 +140,7 @@ void SystemClock_Config(void)
    /** Supply configuration update enable  */
    HAL_PWREx_ConfigSupply(PWR_LDO_SUPPLY);
 
+#ifdef USE_STLINK_DEBUGGER
    /** Configure the main internal regulator output voltage  */
    __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE0);
 
@@ -107,6 +175,69 @@ void SystemClock_Config(void)
    RCC_ClkInitStruct.APB1CLKDivider = RCC_APB1_DIV2;
    RCC_ClkInitStruct.APB2CLKDivider = RCC_APB2_DIV2;
    RCC_ClkInitStruct.APB4CLKDivider = RCC_APB4_DIV2;
+
+#else
+
+ /*
+  *         The system Clock is configured as follows :
+  *            System Clock source            = PLL (HSI)
+  *            SYSCLK(Hz)                     = 520000000 (CPU Clock)
+  *            HCLK(Hz)                       = 260000000 (AXI and AHBs Clock)
+  *            AHB Prescaler                  = 1
+  *            rcc_hclk4 /AHB4                = 260 MHz
+  *            D1 APB3 Prescaler              = 2 (APB3 Clock  130MHz)
+  *            D2 APB1 Prescaler              = 2 (APB1 Clock  130MHz)
+  *            D2 APB2 Prescaler              = 2 (APB2 Clock  130MHz)
+  *            D3 APB4 Prescaler              = 2 (APB4 Clock  130MHz)
+  *            HSI Frequency(Hz)              = 8000000
+  *            PLL_M                          = 4
+  *            PLL_N                          = 260
+  *            PLL_P                          = 1
+  *            PLL_Q                          = 2
+  *            PLL_R                          = 2
+  *            VDD(V)                         = 3.3
+  *            Flash Latency(WS)              = 3
+  */
+
+   /** Configure the main internal regulator output voltage  */
+   __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE0);
+
+   while (!__HAL_PWR_GET_FLAG(PWR_FLAG_VOSRDY)) {}
+
+   /* Use HSI if using external debugger (STLink deactivated = no HSE input fro STLink'd MCO) */
+   RCC_OscInitStruct.OscillatorType       = RCC_OSCILLATORTYPE_HSI;
+   RCC_OscInitStruct.HSIState             = RCC_HSI_DIV8;
+   RCC_OscInitStruct.HSICalibrationValue  = 64;
+   RCC_OscInitStruct.PLL.PLLState         = RCC_PLL_ON;
+   RCC_OscInitStruct.PLL.PLLSource        = RCC_PLLSOURCE_HSI;
+
+   RCC_OscInitStruct.PLL.PLLM             = 4;
+   RCC_OscInitStruct.PLL.PLLN             = 260; /* DIVNx */
+   RCC_OscInitStruct.PLL.PLLFRACN         = 0;
+   RCC_OscInitStruct.PLL.PLLP             = 1;   /* DIVPx (pllx_p_ck) */
+   RCC_OscInitStruct.PLL.PLLQ             = 2;   /* DIVQx (pllx_q_ck) */
+   RCC_OscInitStruct.PLL.PLLR             = 2;   /* DIVRx (pllx_r_ck) */
+
+   RCC_OscInitStruct.PLL.PLLVCOSEL        = RCC_PLL1VCOWIDE;
+   RCC_OscInitStruct.PLL.PLLRGE           = RCC_PLL1VCIRANGE_1;
+
+   if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
+   {
+      Error_Handler();
+   }
+
+   /** Initializes the CPU, AHB and APB buses clocks  */
+   RCC_ClkInitStruct.ClockType       = RCC_CLOCKTYPE_HCLK  | RCC_CLOCKTYPE_SYSCLK  | RCC_CLOCKTYPE_PCLK1
+                                     | RCC_CLOCKTYPE_PCLK2 | RCC_CLOCKTYPE_D3PCLK1 | RCC_CLOCKTYPE_D1PCLK1;
+   RCC_ClkInitStruct.SYSCLKSource    = RCC_SYSCLKSOURCE_PLLCLK;
+   RCC_ClkInitStruct.SYSCLKDivider   = RCC_SYSCLK_DIV2;
+   RCC_ClkInitStruct.AHBCLKDivider   = RCC_HCLK_DIV1;
+   RCC_ClkInitStruct.APB3CLKDivider  = RCC_APB3_DIV2;
+   RCC_ClkInitStruct.APB1CLKDivider  = RCC_APB1_DIV2;
+   RCC_ClkInitStruct.APB2CLKDivider  = RCC_APB2_DIV2;
+   RCC_ClkInitStruct.APB4CLKDivider  = RCC_APB4_DIV2;
+
+#endif
 
    if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_3) != HAL_OK)
    {
@@ -168,11 +299,21 @@ static void MX_GPIO_Init(void)
    HAL_GPIO_WritePin(GPIOB, LED_GREEN_Pin | LED_RED_Pin, GPIO_PIN_RESET);
 
    /*Configure GPIO pins : LED_GREEN_Pin LED_RED_Pin */
-   GPIO_InitStruct.Pin = LED_GREEN_Pin | LED_RED_Pin;
-   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-   GPIO_InitStruct.Pull = GPIO_NOPULL;
+   GPIO_InitStruct.Pin   = LED_GREEN_Pin | LED_RED_Pin;
+   GPIO_InitStruct.Mode  = GPIO_MODE_OUTPUT_PP;
+   GPIO_InitStruct.Pull  = GPIO_NOPULL;
    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
    HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+
+   // WARNING causes error
+//   /* Configure PB3 as AF0 (SWO) */
+//   GPIO_InitStruct.Pin       = DBG_SWO_Pin;
+//   GPIO_InitStruct.Mode      = GPIO_MODE_AF_PP;
+//   GPIO_InitStruct.Pull      = GPIO_NOPULL;
+//   GPIO_InitStruct.Speed     = GPIO_SPEED_FREQ_VERY_HIGH;
+//   GPIO_InitStruct.Alternate = GPIO_AF0_TRACE;  // TRACESWO
+//
+//   HAL_GPIO_Init(DBG_SWO_GPIO_Port, &GPIO_InitStruct);
 }
 
 /**

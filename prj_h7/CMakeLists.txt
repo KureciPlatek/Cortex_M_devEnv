@@ -61,6 +61,8 @@ add_compile_definitions(
    STM32H723xx
    USE_FULL_LL_DRIVER
    USE_HAL_DRIVER
+   USE_SWO
+#   USE_STLINK_DEBUGGER # Use HSE clock if debugger is STLink, HSI if debugger is external
 )
 
 # --- Project compilation flags/parameters

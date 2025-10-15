@@ -1,4 +1,50 @@
-# Connect to target
-target extended-remote :3333
-load
+# Example configuration file for using orbuculum with BMP
+# ...either a genuine one, or a 'Bluepill' variant
+
+source config/gdbtrace.init
+target extended-remote /dev/ttyBmpGdb
+monitor swdp_scan
+file ./bin/prj_h7.elf
+attach 1
+set mem inaccessible-by-default off
 set print pretty
+load
+start
+
+# Configure STM32 SWO pin
+enableSTM32SWO
+
+# ==== This Section for Bluepill =======
+# 2.25Mbps, don't use TPIU, don't use Manchester encoding
+# 72000000 is the current speed of the clock which the
+# divisors are based on...hence the reason it's needed
+# Be careful to not try to read the clock speed from the target
+# (e.g. by using SystemCoreClock or similar) unless you've got the
+# clock running at full speed at the time when this routine is called.
+monitor traceswo 2250000
+prepareSWO 72000000 2250000 0 0
+# ======================================
+
+# ==== This Section for genuine BMP =======
+# 200Kbps, don't use TPIU and Manchester encoding
+# Typically used for 'real' BMP
+# monitor traceswo
+# prepareSWO 72000000 200000 0 1
+# =========================================
+
+dwtSamplePC 1
+dwtSyncTap 3
+dwtPostTap 1
+dwtPostInit 1
+dwtPostReset 15
+dwtCycEna 1
+
+ITMId 1
+ITMGTSFreq 3
+ITMTSPrescale 3
+ITMTXEna 1
+ITMSYNCEna 1
+ITMEna 1
+
+ITMTER 0 0xFFFFFFFF
+ITMTPR 0xFFFFFFFF
