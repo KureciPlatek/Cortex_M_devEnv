@@ -11,7 +11,7 @@
                 "${workspaceRoot}/../STM32CubeH7/Drivers/STM32H7xx_HAL_Driver/Src/**",
                 "${workspaceRoot}/../STM32CubeH7/Drivers/STM32H7xx_HAL_Driver/Inc/**"
             ],
-            "defines": ["STM32H723xx"], // STM32H723xx for intelliSense to fetch HAL and STM's definitions        
+            "defines": ["STM32H723xx", "USE_SWO"], // STM32H723xx for intelliSense to fetch HAL and STM's definitions        
             "cStandard": "c17",
             "cppStandard": "gnu++17",
             "intelliSenseMode": "gcc-arm",

@@ -16,6 +16,11 @@ Download Azure `ThreadX` from its git repo wherever you want. Keep in mind that 
 git clone https://github.com/eclipse-threadx/threadx.git
 ```
 
+
+>[!HINT]
+>I could use `ThreadX` repository provided by STMicroeletronics but I wanted to do it with Azure's official repository. Maybe it is better to use `ThreadX` from STM32CubeH7's repository but I wanted to do it a different way.
+
+
 #### Structure of `ThreadX` git repository
 
 For all ported architectures (core like Cortex-M, whatever) and compiler specific files, we have the following ThreadX folders (`common`) and their corresponding `ports` which contains examples/specific files and other elements to use the `common`, onto a CPU/MCU.
@@ -106,7 +111,7 @@ SysTick_Handler:
 ...
 >```
 >It may be customized, like define other core IRQ handlers like `HardFault_Handler` (which could also be defined in C)
->For more information, look at explanations in [[Project 3 STM32F4 on Linux]], section "`Threadx` modifications".
+>For more information, look at explanations in [[Project_3_STM32F4_on_Linux]], section "`Threadx` modifications".
 
 
 >[!WARNING] 
@@ -129,12 +134,27 @@ cmake -Bbuild -DCMAKE_TOOLCHAIN_FILE=cmake/cortex_m4.cmake .
 cmake --build ./build
 ```
 
-It creates `/build/libthreadx.a` of approximately 200 kB.
+It creates `/build/libthreadx.a` of approximately 200 kb.
 
 
-## FreeRTOS
+## Third party `FreeRTOS`
 
-#todo
+#### For `stm32xx` family
+
+Only `ThreadX` is used. `FreeRTOS` will be done in future.
+
+#### For `rp2xxx` family
+
+Like for other third party sources, Raspberry made its own `FreeRTOS` repository, where all porting for its chip is more up to date.
+
+So for rp2xxx family, you have to take the following repository https://github.com/raspberrypi/FreeRTOS-Kernel.git:
+
+```bash
+git clone https://github.com/raspberrypi/FreeRTOS-Kernel.git
+```
+
+Otherwise, only RP2040 is ported at this date. `RP2350` port is not yet on `FreeRTOS` official's git repository. 
+
 # HAL for F4 and H7
 
 I use HAL for fast programming on `stm32xx` targets. How to use and integrate them is very easy. A deeper explanation on how it is used, how RCC and whole system is configured with it will not be explained here.
@@ -191,5 +211,5 @@ For an exhaustive list of source file I required for the projects, please look a
 
 # RP2xxx's Pico-SDK
 
-pico-sdk is a little bit different as its install process and use imposes some things. How to set it up on you development environment, then use it on your projects with CMake is explained separately here: [[About the Pico-SDK]].
+pico-sdk is a little bit different as its install process and use imposes some things. How to set it up on you development environment, then use it on your projects with CMake is explained separately here: [[About_the_Pico-SDK]].
 

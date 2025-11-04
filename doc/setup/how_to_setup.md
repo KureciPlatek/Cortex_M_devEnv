@@ -13,8 +13,8 @@ If you are not interested, jump to [[setup/Linux/gnu_arm_toolchain_setup|gnu_arm
 For me, **I mainly worked on Linux** with a Raspberry Pi 5, 8 Gb RAM and quad-core Arm Cortex A76 processor.
 
 >[!WARNING] AArch64 Linux and Pi5
->RPi5 has but only one "_sliiiiiightly_" disadvantage: it is aarch64 Linux, and not x86_64. Which means that many programs that were ported by vendors/companies may have been ported on Linux, but not for Raspberry Pi 5.n 
->For example, Saleae software is not supported
+>RPi5 has but only one "_sliiiiiightly_" disadvantage: it is aarch64 Linux, and not x86_64. Which means that many programs that were ported by vendors/companies may have been ported on Linux, but not for Raspberry Pi 5. 
+>For example, Saleae Logic Analyzer software is not supported
 
 ### Working environment setup
 

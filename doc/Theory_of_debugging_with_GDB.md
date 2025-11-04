@@ -47,6 +47,90 @@ So, in order to run a debug session on a Cortex-M target, you have a couple of t
 |    **`gdb`**     | which will debug, flash and/or manipulate the program onto the target                                                                                                                                       | `arm-none-eabi-gdb`, `gdb-multiarch`        |
 
 
+## Typical use of `gdb` with a `gdb-server`:
+
+After you gained enough experience through the different articles, you will be able to run a debug session in a terminal, the common use is as follow:
+- Plug in and power your target, connect the debugger hardware to it
+- Open one terminal to run openOCD, it will prompt that it waits for connections
+- Open another terminal, go where your compiled `.elf` file is and start gdb, providing this .elf file to it
+- In gdb prompt: 
+	- attach to target
+	- load/flash the bare-metal `<program>.elf` file
+	- Set your breakpoints, and other commands before launch
+	- run program and debug it
+
+Diagram of the relations:
+
+![[gdb_gdbserver_principle.svg]]
+
+- Terminal 2: where you will run the debug session
+- Terminal 1: where `gdb-server` runs
+- Terminal 3 (option): all `printf()` will be printed here (explained later)
+
+
+**TERMINAL 1**: run `gdb-server` (in this case, `openOCD`)
+
+```bash
+# Run openOCD for stm32h7
+openocd -f ~/work/prj_blog/prj_h7/stm32h7_debug.cfg
+
+pen On-Chip Debugger 0.12.0+dev-snapshot (2025-07-16-14:15)
+Licensed under GNU GPL v2
+...
+stm32h7x_cti_prepare_restart_one
+Info : Listening on port 6666 for tcl connections
+Info : Listening on port 4444 for telnet connections
+Info : STLINK V3J6M2 (API v3) VID:PID 0483:374E
+...
+Info : [STM32H723ZGTx.cm7] starting gdb server on 3333
+Info : Listening on port 3333 for gdb connections
+Info : [STM32H723ZGTx.cm7] external reset detected
+# Here it is waiting for connections coming from gdb on local, port 3333
+
+```
+
+**TERMINAL 2**: run `gdb`
+
+```bash
+# Run gdb with the elf file:
+arm-none-eabi-gdb path/to/your/prj_h7.elf
+
+# Connect to Black Magic Probe:
+(gdb) target extended-remote :3333
+Remote debugging using :3333
+```
+
+When connected to the `gdb-server`, back to Terminal 1 with `gdb-server` following output should be prompted:
+
+```bash
+...
+Info : [STM32H723ZGTx.cm7] external reset detected
+Info : accepting 'gdb' connection on tcp/3333
+[STM32H723ZGTx.cm7] halted due to debug-request, current mode: Thread
+xPSR: 0x01000000 pc: 0x0801eb7c msp: 0x24050000
+...
+Info : New GDB Connection: 1, Target STM32H723ZGTx.cm7, state: halted
+
+```
+
+Then you may start loading and have fun on terminal 2 (`gdb`):
+```bash
+(gdb) load # Flash program
+Loading section .isr_vector, size 0x2cc lma 0x8000000
+...
+Loading section .data, size 0xcc lma 0x801ecd8
+Start address 0x0801ea3c, load size 126368
+Transfer rate: 18 KB/sec, 936 bytes/write.
+
+# All good, let's roll
+(gdb) run
+The program being debugged has been started already.
+Start it from the beginning? (y or n) y
+Starting program: /home/jeremie/work/prj_blog/prj_h7/bin/prj_h7.elf
+
+```
+
+
 
 ---
 
@@ -65,6 +149,14 @@ From Marus's blog ([Marus/cortex-debug: Visual Studio Code extension for enhanci
 To see what kind of command you may execute, look at gdb documentation. You may find some interesting commands in [GDB Commands — Black Magic Debug documentation](https://black-magic.org/usage/gdb-commands.html) and some other in [GDB Documentation](https://www.sourceware.org/gdb/documentation/)
 
 
+### `.elf` files
+
+No, those are not Legolas files, they stand for **E**xecutable and **L**inkable **F**ormat. They are quite handy when debugging bare-metal project because they contain all symbols (you must compile with `-ggdb3` option) and path to source code on the machine you compiled it.
+
+So during debug session, reading this .elf file, `gdb` will be able to point to correct source file and provide info about C/C++ code where Program Counter is.
+
+For more information, look here: [Executable and Linkable Format - Wikipedia](https://en.wikipedia.org/wiki/Executable_and_Linkable_Format)
+And here: [ARM ELF File Format](https://developer.arm.com/documentation/dui0101/latest/)
 
 
 **Next:**

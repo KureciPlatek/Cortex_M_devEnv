@@ -3,10 +3,21 @@
       "app_threadx.h": "c",
       "tx_api.h": "c",
       "tx_port.h": "c",
-      "app_azure_rtos_config.h": "c"
+      "app_azure_rtos_config.h": "c",
+      "cyw43.h": "c",
+      "board.h": "c",
+      "async_context_freertos.h": "c",
+      "random": "c",
+      "opt.h": "c",
+      "dns.h": "c",
+      "cyw43_arch.h": "c",
+      "stdlib.h": "c",
+      "mqtt_pico2w.h": "c",
+      "multicore.h": "c"
    },
    "cortex-debug.gdbPath": "arm-none-eabi-gdb", 
    "makefile.extensionOutputFolder": "./.vscode",
    "doxdocgen.generic.authorEmail": "jeremie.gallee@noser.com",
-   "doxdocgen.generic.authorName": "Jeremie Gallee"
+   "doxdocgen.generic.authorName": "Jeremie Gallee",
+   "cortex-debug.variableUseNaturalFormat": false
 }

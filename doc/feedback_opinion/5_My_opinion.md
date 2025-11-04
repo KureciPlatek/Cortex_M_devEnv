@@ -24,6 +24,7 @@ There are IDEs like STM32CubeIDE or other Eclipse based environment, but it is n
 >
 >On my opinion, if there is the need to use a GUI to debug (which is also on my opinion quite useful), then I would go to a professional tool, like JLink and Ozone from SEGGER which covered 100% of debug cases I met until now.
 
+
 ## About CMake
 
 Many projects are now managed with CMake, and on my opinion, with too much modularity. It is good to have modularity, but until a point. For example, in pico-sdk as it will be seen, CMake is on my opinion too intensively used, and managing CMake may start to take more time than developing project itself (again, on my opinion). And it should not be.
@@ -37,6 +38,43 @@ Instead, I strive for one single, as simple as possible CMakeLists.txt, that man
 >
 >**For example**: 
 >I used targets from two different companies: STMicroelectronics and Raspberry Pi, and for both, different targets. For all targets from STMicroelectronics, I could keep a lot of common between the CMakeLists.txt. But almost nothing when I started to work with RP2xxx from Raspberry Pi.
+
+
+I find generally that people overuse `CMake` and its many functions for same functionality. 
+For example, to add `-Wall` flag to compiler, there are different options:
+
+```CMake
+set (CMAKE_C_FLAGS "-Wall")
+```
+Or
+```CMake
+add_compile_options(-Wall)
+```
+
+**But those two ways bring different compilation results**
+
+- In the first case, I have an error thrown:
+```bash
+/pico-sdk/src/rp2_common/hardware_sync_spin_lock/include/hardware/sync/spin_lock.h:152:2: error: #error no SW_SPIN_LOCK_LOCK available for PICO_USE_SW_SPIN_LOCK on this platform
+  152 | #error no SW_SPIN_LOCK_LOCK available for PICO_USE_SW_SPIN_LOCK on this platform
+      |  ^~~~~
+```
+
+- In the second case (from pico-sdk example), I have only warnings (a lot for an sdk on my opinion)
+
+Git commit with the error: #51778e9
+
+Other way to add GNU-ARM flags:
+```CMake
+set_source_files_properties(
+    ${PICO_LWIP_PATH}/path/to/some/file.c
+    PROPERTIES
+    COMPILE_OPTIONS "-Wno-unused-result"
+    )
+```
+
+I mean, how many ways we can do that? On my opinion, it leads to the kind of problem I encountered earlier. Too many options = too many things to manage and maintain = increased risk of non understandable problems.
+
 
 
 ## Windows pride
@@ -87,7 +125,6 @@ Those two big babies are required to generate a couple of files, which won't be 
 
 They generate, complex startup and linker file and are quite handy to generate clock, pll and system configuration. It could also be possible to do those parts which are in C (not linker and startup.s which I recommend take some already made) ourselves, but it would take too much time.
 
-
 >[!WARNING] 
 >Every time you create a new project with STM32CubeMX and/or STM32CubeIDE, it will actually also do a git clone of the STM32CubeXX folders we manually cloned!!! Again, bundle all together again. It is, yeah, explained when generating a project with Cube. 
 >But now I have a file in my `%HOME%` older which is more than 11 Gbyte!!:
@@ -108,3 +145,7 @@ They generate, complex startup and linker file and are quite handy to generate c
 >```
 >I mean, whaaaaat??? If they are different, gosh...
 
+>[!WARNING]
+>I discovered that for STM32H7, ThreadX is not in the typical `<stm32_hal_git_repo>/Middlewares/ST/threadx/` like for STM32N6 or some others, but another git repo is provided by STMicroelectronics, which is named: `x-cube-azrtos-h7`. Inside this repository, **another STM32H7 HAL** is available, and **is different from the STM32CubeH7**!!
+>
+>After a diff, I saw only few differences, but differences anyway.

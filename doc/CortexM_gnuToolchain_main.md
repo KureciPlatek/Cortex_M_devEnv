@@ -49,52 +49,63 @@ Hierarchy/Structure of this documentation:
 
 ```javascript
 📁 project_blog/
-├── 📄 CortexM_gnuToolchain_main.md (main file)[[CortexM_gnuToolchain_main]]
-├── 📄 CortexM_gnuToolchain_tickets.md (list tickets and potential improvements)
-├── 📄 Theory_of_debugging_with_gdb.md (understand beneath the IDE)
+├── 📄 CortexM_gnuToolchain_main.md    // (main file)[[CortexM_gnuToolchain_main]]
+├── 📄 CortexM_gnuToolchain_tickets.md // (list tickets and potential improvements)
+├── 📄 Theory_of_debugging_with_gdb.md // (understand beneath the IDE)
 ├── 📁 setup/
 │   ├──📁 Linux/
 │   │   ├── 📄 CMake_setup.md
-│   │   ├── 📄 gnu_arm_toolchain_setup.md
-│   │   ├── 📄 openOCD_setup.md
 │   │   ├── 📄 Debuggers.md
-│   │   └── 📄 external_sources_setup.md
-│   ├──📁 Windows/
-//  │   ├── 📄 CMake_setup.md (should be the same as in Linux)
+│   │   ├── 📄 external_sources_setup.md
 │   │   ├── 📄 gnu_arm_toolchain_setup.md
-│   │   ├── 📄 openOCD_setup.md
+│   │   └── 📄 openOCD_setup.md
+│   ├──📁 Windows/
+│   │   ├── 📄 CMake_setup.md // (should be the same as in Linux)
+│   │   ├── 📄 external_sources_setup.md
+│   │   ├── 📄 gnu_arm_toolchain_setup.md
 //  │   ├── 📄 Debuggers.md (should be the same as in Linux)
-│   │   └── 📄 external_sources_setup.md
+│   │   └── 📄 openOCD_setup.md
 │   └── 📄 troubleshooting.md
 ├── 📁 projects/
-│   ├── 📄 projects_main.md (information about project's choices)
+│   ├── 📄 projects_main.md // (information about project's choices)
 │   ├── 📁 stm32/
 │   └── 📁 rp2xxx/
-├── 📁 setup/ (just for my diagrams, open it for fun if you want)
-└── 📁 feedback_opinion/ (optional to read, nothing technical, just my opinion)
+├── 📁 diagrams/ // (just for my diagrams, open it for fun if you want)
+└── 📁 feedback_opinion/  // (optional to read, nothing technical, just my opinion)
     └── 📄 my_opinion.md
 ```
 
+
 Link to all markdown files and project folders:
 
-- [ ] [[Theory_of_debugging_with_GDB]]
-- [ ]  [[External sources and program to install]]
+- [ ] This page [[CortexM_gnuToolchain_main]]
+- [ ] My ticketing system (sorry not sorry Atlassian) [[CortexM_gnuToolchain_tickets]]
+- [ ] **Start here**: [[Theory_of_debugging_with_GDB]]
 - [ ]  setup
+	- [ ]  [[how_to_setup]]
 	- [ ]  Linux
-		- [ ] [[CMake_setup]]
+		- [ ] [[setup/Linux/CMake_setup]]
 		- [ ] [[setup/Linux/gnu_arm_toolchain_setup]]
-		- [ ] 
+		- [ ] [[Debuggers]] #warning-wip
+		- [ ] [[setup/Linux/External_sources_setup|External_sources_setup]]
+		- [ ] [[setup/Linux/openOCD_setup|openOCD_setup]]
 	- [ ]  Windows
-- [ ] Set of CMake script's skeleton [[Set of CMake script skeleton]]
-- [ ] How to handle and manage ThreadX's sources [[CortexM_ThreadX]]
-- [ ] STM32 targets:
-	- [ ] Project 1: STM32H7 on Linux [[Project 1 STM32H7 on Linux]]
-	- [ ] Project 2: STM32H7 on Windows [[Project 2 STM32H7 on Windows]]
-	- [ ] Project 3: STM32F4 on Linux [[Project 3 STM32F4 on Linux]]
-- [ ] Raspberry Pico targets:
-	- [ ] Project 1: RP2040 on Linux [[Project 1 RP2040 on Linux]]
-	- [ ] Project 2:  RP2350 with Cortex-M33 on Linux and Windows [[Project 2  RP2350 with Cortex-M33 on Linux and Windows]]
-	- [ ] Project 3:  RP2350 with RISC-V on Linux [[Project 3  RP2350 with RISC-V on Linux]]
+		- [ ] [[setup/Windows/CMake_setup|CMake_setup]]
+		- [ ] [[setup/Windows/External_sources_setup|External_sources_setup]]
+		- [ ] [[setup/Windows/gnu_arm_toolchain_setup|gnu_arm_toolchain_setup]]
+		- [ ] [[setup/Windows/openOCD_setup|openOCD_setup]]
+- [ ] Projects:
+	- [ ] [[information_about_projects]]
+	- [ ] STM32 targets:
+		- [ ] Project 1: STM32H7 on Linux [[Project_1_STM32H7_on_Linux]]
+		- [ ] Project 2: STM32H7 on Windows [[Project_2_STM32H7_on_Windows]]
+		- [ ] Project 3: STM32F4 on Linux [[Project_3_STM32F4_on_Linux]]
+	- [ ] Raspberry Pico targets:
+		- [ ] [[About_the_Pico-SDK]]
+		- [ ] [[ThreadX_on_rp2350_cortexM33]]
+		- [ ] Project 1: RP2040 on Linux [[Project_1_RP2040_on_Linux]]
+		- [ ] Project 2: RP2350 on Linux [[Project_2 _RP2350_with_Cortex-M33_on_Linux]]
+		- [ ] Project 3:  RP2350 with RISC-V on Linux [[Project_3 _RP2350_with_RISC-V_on_Linux]] #wip
 
 
 

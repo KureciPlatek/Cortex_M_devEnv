@@ -61,8 +61,12 @@ add_compile_definitions(
    STM32H723xx
    USE_FULL_LL_DRIVER
    USE_HAL_DRIVER
+<<<<<<< HEAD
    USE_SWO
 #   USE_STLINK_DEBUGGER # Use HSE clock if debugger is STLink, HSI if debugger is external
+=======
+#   USE_STLINK_DEBUGGER # Uncomment for Nucleo projects that uses STLink as debugger for better clock (will use HSE from STLink->MCO instead of HSI)
+>>>>>>> 85d4da432b18e3b1034415de4e360b3480db58d2
 )
 
 # --- Project compilation flags/parameters
