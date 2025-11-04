@@ -43,10 +43,10 @@ void Error_Handler(void);
  * @param len
  * @return
  */
-//int _write(int file, char *ptr, int len);
+int _write(int file, char *ptr, int len);
 
-// #define SWO_FREQ 115200
-// #define HCLK_FREQ 216000000
+#define SWO_FREQ  2000000 // 115200
+#define HCLK_FREQ 260000000 /* 260 MHz /!\ Warning to be calculated (better) */
 //
 // /* Pelican TPIU
 //  * cut down TPIU implemented in STM32F7 series

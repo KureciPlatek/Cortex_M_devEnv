@@ -31,7 +31,7 @@ void SystemClock_Config(void);
 static void MPU_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_USART3_UART_Init(void);
-// static void configureSWO(void);
+static void configureSWO(void);
 
 #define SWO_BAUDRATE 115200U
 #define ARM_LAR_ACCESS_ENABLE 0xC5ACCE55
@@ -39,14 +39,14 @@ static void MX_USART3_UART_Init(void);
 /**
  * @brief overwrite _write() from syscall.c to use ITM_SendChar() instead of __io_putchar()
  */
-// int _write(int file, char *ptr, int len)
-// {
-//    for (int i = 0; i < len; ++i)
-//    {
-//       ITM_SendChar(*ptr++);
-//    }
-//    return len;
-// }
+int _write(int file, char *ptr, int len)
+{
+   for (int i = 0; i < len; ++i)
+   {
+      ITM_SendChar(*ptr++);
+   }
+   return len;
+}
 
 /**
  * @brief  The application entry point.
@@ -71,9 +71,9 @@ int main(void)
    MX_GPIO_Init();
    MX_USART3_UART_Init();
 
-// #ifdef USE_SWO
-//    configureSWO();
-// #endif
+#ifdef USE_SWO
+   configureSWO();
+#endif
 
    MX_ThreadX_Init();
 
@@ -83,48 +83,39 @@ int main(void)
    while (1){}
 }
 
-// void configureSWO(void)
-// {
-//    /* RCC and GPIO alternate function done elsewere */
-//
-//    CoreDebug->DEMCR |= CoreDebug_DEMCR_TRCENA_Msk; // Bit 24 of DEMCR Debug Exception and Monitor Control Register
-//
-// #if (__CORTEX_M == 0x07U)
-//    /* in Cortex M7, the trace needs to be unlocked via the DWT->LAR register with 0xC5ACCE55 value */
-//    DWT->LAR = ARM_LAR_ACCESS_ENABLE;
-// #endif
-//
-//    const uint32_t clock_frequency = HAL_RCC_GetHCLKFreq(); // rcc_ahb_frequency;
-// 	const uint32_t divisor = (clock_frequency / SWO_BAUDRATE) - 1U;
-//
-//    /* Configure TPI as 1 bit mode? */
-//    TPI->SPPR = (0x01 & TPI_SPPR_TXMODE_Msk); /* b10 = UART/NRZ (async) b01 = Manchester (See TPIU_SPPR definition in ARM) */
-//    TPI->ACPR = divisor;
-//
-//
-// //   TPIU_CURRENT_PORT_SIZE     = 1; /* port size = 1 bit */
-// //   TPIU_SELECTED_PIN_PROTOCOL = 1; /* trace port protocol = Manchester */
-// //   TPIU_ASYNC_CLOCK_PRESCALER = (HAL_RCC_GetHCLKFreq() / SWO_FREQ) - 1;
-// //   TPIU_FORMATTER_AND_FLUSH_CONTROL = 0x100; /* turn off formatter (0x02 bit) */
-//    DBGMCU->CR = DBGMCU_CR_DBG_SLEEPD1 | DBGMCU_CR_DBG_STOPD1 | DBGMCU_CR_DBG_STANDBYD1 | DBGMCU_CR_DBG_TRGOEN;
-//
-// //   SWO->SPPR;
-//
-//    DWT->CTRL |= DWT_CTRL_CYCCNTENA_Msk;
+void configureSWO(void)
+{
+   /* RCC and GPIO alternate function done elsewere */
+   CoreDebug->DEMCR |= CoreDebug_DEMCR_TRCENA_Msk; // Bit 24 of DEMCR Debug Exception and Monitor Control Register
 
+#if (__CORTEX_M == 0x07U)
+   /* in Cortex M7, the trace needs to be unlocked via the DWT->LAR register with 0xC5ACCE55 value */
+   DWT->LAR = ARM_LAR_ACCESS_ENABLE;
+ #endif
 
-//   uint32_t myVar1 = TPI->ACPR;
-//   uint32_t myVar2 = DBGMCU->CR;
+   const uint32_t clock_frequency = HAL_RCC_GetHCLKFreq(); // rcc_ahb_frequency;
+	const uint32_t divisor = (HCLK_FREQ / SWO_BAUDRATE) - 1U;
+   /* Configure TPI as 1 bit mode? */
+   TPI->SPPR = (0x02 & TPI_SPPR_TXMODE_Msk); /* b10 = UART/NRZ (async) b01 = Manchester (See TPIU_SPPR definition in ARM) */
+   TPI->ACPR = divisor;
+   TPI->CSPSR = 0x01;
+
+   ITM->LAR = 0xC5ACCE55;
+   ITM->TCR = ITM_TCR_TSENA_Msk | ITM_TCR_SWOENA_Msk; // Enable ITM, timestamp, and SWO (ITM_TCR_ITMENA_Msk should be set by debugger)
+   ITM->TER = 0x1; // Enable stimulus port 0 (used for printf-style output)
+
+   uint32_t myVar1 = TPI->ACPR;
+   uint32_t myVar2 = DBGMCU->CR;
 
 //   ITM->LAR = 0xC5ACCE55;
 //   ITM->TCR = ITM_TCR_TraceBusID_Msk | ITM_TCR_SWOENA_Msk | ITM_TCR_SYNCENA_Msk | ITM_TCR_ITMENA_Msk;
 //   ITM->TPR = ITM_TPR_PRIVMASK_Msk; /* all ports accessible unprivileged */
 //   ITM->TER = 1; /* enable stimulus channel 0, used with ITM_SendChar() */
-//
 //   /* this apparently turns off sync packets, see SYNCTAP in DDI0403D pdf: */
 //   DWT->CTRL = 0x400003FE;
-//   printf("This var: %ld %ld\n", myVar1, myVar2);
-// }
+
+   printf("This var: %ld %ld %ld\n", myVar1, myVar2, clock_frequency);
+}
 
 /**
  * @brief System Clock Configuration
@@ -306,14 +297,14 @@ static void MX_GPIO_Init(void)
    HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
    // WARNING causes error
-//   /* Configure PB3 as AF0 (SWO) */
-//   GPIO_InitStruct.Pin       = DBG_SWO_Pin;
-//   GPIO_InitStruct.Mode      = GPIO_MODE_AF_PP;
-//   GPIO_InitStruct.Pull      = GPIO_NOPULL;
-//   GPIO_InitStruct.Speed     = GPIO_SPEED_FREQ_VERY_HIGH;
-//   GPIO_InitStruct.Alternate = GPIO_AF0_TRACE;  // TRACESWO
-//
-//   HAL_GPIO_Init(DBG_SWO_GPIO_Port, &GPIO_InitStruct);
+   /* Configure PB3 as AF0 (SWO) */
+   GPIO_InitStruct.Pin       = DBG_SWO_Pin;
+   GPIO_InitStruct.Mode      = GPIO_MODE_AF_PP;
+   GPIO_InitStruct.Pull      = GPIO_NOPULL;
+   GPIO_InitStruct.Speed     = GPIO_SPEED_FREQ_VERY_HIGH;
+   GPIO_InitStruct.Alternate = GPIO_AF0_SWJ;  // TRACESWO
+
+   HAL_GPIO_Init(DBG_SWO_GPIO_Port, &GPIO_InitStruct);
 }
 
 /**
