@@ -17,7 +17,7 @@ There is the last part, `gdb-server` requires a hardware part, the famous debugg
 
 
 **Overview of debug on external target**:
-![[gdb_gdbServer_view.svg]]
+![Overview](gdb_gdbServer_view.svg)
 
 **With:**
 - `gdb` the debugger itself, there the user load, flashes, debugs its compiled executable. It is where we will have fun debugging
@@ -61,7 +61,7 @@ After you gained enough experience through the different articles, you will be a
 
 Diagram of the relations:
 
-![[gdb_gdbserver_principle.svg]]
+![Principle](gdb_gdbserver_principle.svg)
 
 - Terminal 2: where you will run the debug session
 - Terminal 1: where `gdb-server` runs
@@ -88,6 +88,7 @@ Info : [STM32H723ZGTx.cm7] external reset detected
 # Here it is waiting for connections coming from gdb on local, port 3333
 
 ```
+
 
 **TERMINAL 2**: run `gdb`
 

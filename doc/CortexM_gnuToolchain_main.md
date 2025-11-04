@@ -1,7 +1,7 @@
 # Introduction
 
->[!Abstract] 
->The aim of this article ist to show how to set a development environment with only **gnu-arm-none-eabi** tool-chain. The **only costs** are **laptop, Internet, electricity**, the **debuggers** (depends) and the **target boards**.
+> [!NOTE] 
+> The aim of this article ist to show how to set a development environment with only **gnu-arm-none-eabi** tool-chain. The **only costs** are **laptop, Internet, electricity**, the **debuggers** (depends) and the **target boards**.
 
 What you will learn in this article:
 - Set up a **complete Cortex-M development environment** using only open-source tools for both Windows and Linux
@@ -37,8 +37,8 @@ And I got some low cost targets too (<30$):
 |   Raspberry Pico RP2040   | dual Cortex-M0+                                               | [Buy a Raspberry Pi Pico – Raspberry Pi](https://www.raspberrypi.com/products/raspberry-pi-pico/)                                                                                                           |
 | Raspberry Pico 2 W RP2350 | dual Cortex-M33 and dual RISC-V)                              | [Buy a Raspberry Pi Pico 2 – Raspberry Pi](https://www.raspberrypi.com/products/raspberry-pi-pico-2/)                                                                                                       |
 
-> [!TIP]  Particularity for RP2350
-> It embeds two kind of core architecture: RISC-V and Cortex-M33. Only one architecture can run at a time (obviously), it has to be selected at start-up.
+> [!TIP]  
+> Particularity for RP2350: it embeds two kind of core architecture: RISC-V and Cortex-M33. Only one architecture can run at a time (obviously), it has to be selected at start-up.
 
 ---
 ## Roadmap
@@ -78,11 +78,11 @@ Hierarchy/Structure of this documentation:
 
 Link to all markdown files and project folders:
 
-- [ ] This page [[CortexM_gnuToolchain_main]]
-- [ ] My ticketing system (sorry not sorry Atlassian) [[CortexM_gnuToolchain_tickets]]
-- [ ] **Start here**: [[Theory_of_debugging_with_GDB]]
+- [ ] This page [CortexM_gnuToolchain_main](CortexM_gnuToolchain_main.md) 
+- [ ] My ticketing system (sorry not sorry Atlassian) [CortexM_gnuToolchain_tickets](CortexM_gnuToolchain_tickets.md)
+- [ ] **Start here**: [Theory_of_debugging_with_GDB](Theory_of_debugging_with_GDB.md) 
 - [ ]  setup
-	- [ ]  [[how_to_setup]]
+	- [ ]  [how_to_setup](how_to_setup.md)
 	- [ ]  Linux
 		- [ ] [[setup/Linux/CMake_setup]]
 		- [ ] [[setup/Linux/gnu_arm_toolchain_setup]]
