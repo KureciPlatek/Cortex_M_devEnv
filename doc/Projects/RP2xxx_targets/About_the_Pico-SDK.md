@@ -116,7 +116,7 @@ Also, it presents the disadvantage to have a `/2.1.0/` folder and a headless git
 Here is an extract on how `~/.pico-sdk/sdk/<version.x.y.z>/` that appeared on my computer after install of Pico-SDK extension for VSCode: 
 
 ```bash
-jeremie@N619:~/.pico-sdk$ ll
+jeremie@laptop:~/.pico-sdk$ ll
 total 36
 drwxr-xr-x  9 jeremie jeremie 4096 Dec 12 18:05 ./
 drwxr-x--- 18 jeremie jeremie 4096 Dec 12 18:04 ../
@@ -128,8 +128,8 @@ drwxr-xr-x  3 jeremie jeremie 4096 Dec 12 18:04 sdk/
 drwxr-xr-x  3 jeremie jeremie 4096 Dec 12 18:04 toolchain/
 drwxr-xr-x  3 jeremie jeremie 4096 Dec 12 18:04 tools/
 
-jeremie@N619:~/.pico-sdk$ cd sdk/2.1.0/
-jeremie@N619:~/.pico-sdk/sdk/2.1.0$ ll
+jeremie@laptop:~/.pico-sdk$ cd sdk/2.1.0/
+jeremie@laptop:~/.pico-sdk/sdk/2.1.0$ ll
 total 108
 drwxr-xr-x 12 jeremie jeremie 4096 Dec 12 18:04 ./
 drwxr-xr-x  3 jeremie jeremie 4096 Dec 12 18:04 ../
@@ -165,14 +165,14 @@ we have again another ninja variant: the `/v1.12.1/` as a standalone.
 
 **In `cmake/`** 
 ```bash
-jeremie@N619:~/.pico-sdk/cmake$ ll
+jeremie@laptop:~/.pico-sdk/cmake$ ll
 total 16
 drwxr-xr-x 3 jeremie jeremie 4096 Dec 12 18:05 ./
 drwxr-xr-x 9 jeremie jeremie 4096 Dec 12 18:05 ../
 -rw-r--r-- 1 jeremie jeremie  886 Dec 12 18:05 pico-vscode.cmake
 drwxr-xr-x 6 jeremie jeremie 4096 Dec 12 18:05 v3.29.9/
-jeremie@N619:~/.pico-sdk/cmake$ cd v3.29.9/
-jeremie@N619:~/.pico-sdk/cmake/v3.29.9$ ll
+jeremie@laptop:~/.pico-sdk/cmake$ cd v3.29.9/
+jeremie@laptop:~/.pico-sdk/cmake/v3.29.9$ ll
 total 24
 drwxr-xr-x  6 jeremie jeremie 4096 Dec 12 18:05 ./
 drwxr-xr-x  3 jeremie jeremie 4096 Dec 12 18:05 ../
@@ -187,7 +187,7 @@ We have another install of CMake **and** a `pico-vscode.cmake` which checks some
 **In `toolchain/`**
 Again, we have here a new installed `gnu-arm-none-eabi` tool-chain
 ```bash
-jeremie@N619:~/.pico-sdk/toolchain/13_3_Rel1$ ll
+jeremie@laptop:~/.pico-sdk/toolchain/13_3_Rel1$ ll
 total 584
 drwxr-xr-x 8 jeremie jeremie   4096 Dec 12 18:04 ./
 drwxr-xr-x 3 jeremie jeremie   4096 Dec 12 18:04 ../

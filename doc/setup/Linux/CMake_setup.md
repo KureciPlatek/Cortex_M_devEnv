@@ -60,8 +60,8 @@ For easiness in `CMakeLists.txt` and, because files and `STM32CubeHAL` folders n
 # Variables to sort out which STM32XX or RP2XXX family we are compiling for
 set (UPPERCASE_MCU_FAMILY_H7 H7) # STMicroelectronics STM32H7xx
 set (LOWERCASE_MCU_FAMILY_H7 h7) # STMicroelectronics STM32H7xx
-set (UPPERCASE_MCU_FAMILY_N6 N6) # STMicroelectronics STM32N6xx
-set (LOWERCASE_MCU_FAMILY_N6 n6) # STMicroelectronics STM32N6xx
+set (UPPERCASE_MCU_FAMILY_F4 F4) # STMicroelectronics STM32H7xx
+set (LOWERCASE_MCU_FAMILY_F4 f4) # STMicroelectronics STM32H7xx
 set (UPPERCASE_MCU_FAMILY_RP RP) # Raspberry RP2040 / RP2350
 set (LOWERCASE_MCU_FAMILY_RP rp) # Raspberry RP2040 / RP2350
 ```

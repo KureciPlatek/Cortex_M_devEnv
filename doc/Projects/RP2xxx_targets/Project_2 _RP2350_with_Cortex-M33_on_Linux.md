@@ -114,7 +114,7 @@ Then, when hitting ENTER, `mosquitto_passwd` will ask you to give a password for
 `Mosquitto` can present some strange problems when not cleanly set down and Rpi5 is shut down. It sends afterwards a magnificently useless message when trying to start/restart` mosquitto.service` with `systemctl`:
 
 ```bash
-jeremie@jeremDev:~/work/prj_blog/prj_rp2350 $ sudo systemctl start mosquitto.service
+jeremie@laptop:~/work/prj_blog/prj_rp2350 $ sudo systemctl start mosquitto.service
 Job for mosquitto.service failed because the control process exited with error code.
 See "systemctl status mosquitto.service" and "journalctl -xeu mosquitto.service" for details.
 ```

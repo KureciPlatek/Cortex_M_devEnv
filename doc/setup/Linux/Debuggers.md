@@ -1,4 +1,8 @@
 
+>[!WARNING]
+>This page is work in progress
+>It should gather specificity for each debuggers and how to handle it (example, BMP has an integrated gdb-server and COM port)  
+
 ## Hardware Debugger Comparison
 
 | Debugger | Price Range | Pros | Cons | Best For |
@@ -9,22 +13,16 @@
 | **Black Magic Probe** | $80 | • Open source hardware/software<br>• Self-contained GDB server<br>• No additional software needed | • Higher cost<br>• Limited availability | Open source enthusiasts |
 
 
-
-
 ### Each debugger hardware is different
 
 How to set debugger's hardware (cables, voltages, etc...) is quite easy and also quite different, depending on the target to be installed. To understand how is it done, please refer to your hardware target documentation, as well as the debugger documentation.
 
 
-
 # In praxis
 
-There are different gdb and gdb-server programs, as well as debuggers, here is the 
+There are different `gdb` and `gdb-server` programs, as well as debuggers, here is the 
 
 For the `gdb` program, I mainly used `arm-none-eabi-gdb`, from the last official release of `gnu-arm-none-eabi`. `gdb-multiarch` also works fine, but may be old and not support some more recent SoC.
-
-
-
 
 
 # Details for debuggers I listed
@@ -56,7 +54,7 @@ For the `gdb` program, I mainly used `arm-none-eabi-gdb`, from the last official
 
 Install of Rustup
 ```bash
-jeremie@jeremDev:~ $ curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+jeremie@laptop:~ $ curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 info: downloading installer
 
 Welcome to Rust!

@@ -470,7 +470,7 @@ sudo dmesg
 ...
 ```
 
-But on /dev/tty* it is possible that the device is hidden. udev rules have to be updated for that, look at: [blackmagic/driver at main · blackmagic-debug/blackmagic](https://github.com/blackmagic-debug/blackmagic/tree/main/driver#99-blackmagic-plugdevrules)
+But on `/dev/tty*` it is possible that the device is hidden. `udev` rules have to be updated for that, look at: [blackmagic/driver at main · blackmagic-debug/blackmagic](https://github.com/blackmagic-debug/blackmagic/tree/main/driver#99-blackmagic-plugdevrules)
 
 Basically, file [blackmagic/driver/99-blackmagic-plugdev.rules at main · blackmagic-debug/blackmagic](https://github.com/blackmagic-debug/blackmagic/blob/main/driver/99-blackmagic-plugdev.rules) has to be added in `/etc/udev/rules.d/`
 
@@ -487,9 +487,31 @@ sudo reboot
 
 For more fun about configuring BMP, look at the `bmputil` installation here: [[Debuggers]] in section BMP
 
-### Debug session
+### Debug session with `gdb` only
 
-To start a debug session, it is actually not required to run openOCD or any gdb-server as it is already managed by debug probe. Just run gdb
+To start a debug session, it is actually not required to run `openOCD` or any `gdb-server` as it is already managed by debug probe. Just run `gdb` and connect to the `/dev/ttyBmpGdb` but do not connect to `localhost:3333`, as no `gdb-server` is available locally.
+
+Instead, when in `gdb`, connect to `BMP` device as follow:
+
+```bash
+# Run gdb with the elf file:
+arm-none-eabi-gdb path/to/your/prj_rp.elf
+
+# Connect to Black Magic Probe:
+(gdb) target extended-remote /dev/ttyBmpGdb
+Remote debugging using /dev/ttyBmpGdb
+
+# Scan for targets connected to BMP
+(gdb) monitor auto_scan
+Target voltage: 3.3V
+Available Targets:
+No. Att Driver
+ 1      STM32H723 M7
+ 
+# Attach to target 2 [^1]
+(gdb) attach 2
+(gdb) # Now you are ready to load and run
+```
 
 
 ### Add `UART`'s `printf()` to BMP handling
@@ -553,7 +575,7 @@ The important things here, are:
 >There is a high chance that it won't work for you...
 
 
-### Future developments
+### Future developments with BMP
 
 Many things like automatization are possible with this small debugger, and everything is open-source and quite well explained. Like add `make flash` to your commands in `makefile`:
 
@@ -584,3 +606,6 @@ Anyway, as everything (most of it) is open, it allows to find a way to debug a p
 
 My opinion on all of that is that the less integrated/automated, the better. It is not important to have the most expensive tool, as long as we understand what is done, can easily find a solution, a fix to solve our problem.
 
+
+
+[^1]: I had to attach to target 2 as it was there that I could load (flash) the program. Some `rp2xxx` specificity I guess

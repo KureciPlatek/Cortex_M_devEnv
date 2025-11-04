@@ -7,10 +7,11 @@ I installed the [Arm GNU Toolchain Downloads – Arm Developer](https://develope
 
 There are many different, I took _Windows (mingw-w64-x86_64) hosted cross toolchains_. It is important to select the _AArch32 bare-metal target (arm-none-eabi)_ as we are targeting bare-metal programs (no OS on target)
 
-Toolchain is installed here:
+After installing on Wodiws, all things required for tool-chain are installed here:
 ```bash
 C:\Program Files (x86)\Arm GNU Toolchain arm-none-eabi\14.3 rel1\bin>
 ```
+
 #### Beware of `%PATH%` if you installed STM32CubeIDE
 
 >[!WARNING] Path conflict?
@@ -32,7 +33,7 @@ mingw32-make: *** [Makefile:90: all] Error 2
 >    ```
 > (From linker file)
 
-I had indeed in my `%PATH%`, STM32Cube, which was placed before the brand new installed gnu-arm-toolchain. And also an old ARM-GNU compiler:
+I had indeed in my `%PATH%`, STM32Cube, which was placed before the brand new installed `gnu-arm-toolchain`. And also an old ARM-GNU compiler:
 
 ```dos
 C:\Windows\System32\OpenSSH\;
@@ -45,7 +46,7 @@ C:\Program Files\usbipd-win\;
 C:\Program Files\TortoiseSVN\bin;
 ```
 
-Another problem was that I got an error when installing the last ARM-GNU toolchain, path was too long for Windows, which said to me to manage it by myself the operation of adding the newly installed gnu-arm, version 14 to `%PATH%` variable. 
+Another problem was that I got an error when installing the last ARM-GNU tool-chain, path was too long for Windows, which said to me to manage it by myself the operation of adding the newly installed gnu-arm, version 14 to `%PATH%` variable. 
 
 Funny this path length problem of Windows, and 1000 Mb of RAM for Edge when opening two pdf is ok...
 
